@@ -2,10 +2,9 @@ package majsoul_api
 
 import (
 	"bytes"
+	"context"
 	"fmt"
-	"github.com/gorilla/websocket"
-	"net/http"
-	"time"
+	"nhooyr.io/websocket"
 )
 
 const (
@@ -17,8 +16,7 @@ const (
 )
 
 type socketClient struct {
-	dialer *websocket.Dialer
-	conn   *websocket.Conn
+	conn *websocket.Conn
 
 	service  string
 	index    uint16
@@ -28,18 +26,15 @@ type socketClient struct {
 func (s *socketClient) init(service string, url string) (err error) {
 	s.service = ".lq." + service
 	s.index = 0
-	s.dialer = &websocket.Dialer{
-		Proxy:            http.ProxyFromEnvironment,
-		HandshakeTimeout: 45 * time.Second,
-	}
-	s.conn, _, err = s.dialer.Dial(url, http.Header{})
+
+	s.conn, _, err = websocket.Dial(context.Background(), url, nil)
 	s.handlers = make([]func(msg []byte), MaxSocketIndex)
 	return
 }
 
 func (s *socketClient) Listen() {
 	for {
-		_, p, err := s.conn.ReadMessage()
+		_, p, err := s.conn.Read(context.Background())
 		if err != nil {
 			panic(err)
 			return
@@ -71,7 +66,7 @@ func (s *socketClient) sendRPC(method string, packet []byte, handler func(msg []
 	s.encodePacket(buffer, method, packet)
 
 	s.handlers[s.index] = handler
-	return s.conn.WriteMessage(websocket.BinaryMessage, buffer.Bytes())
+	return s.conn.Write(context.Background(), websocket.MessageBinary, buffer.Bytes())
 }
 
 func (s *socketClient) encodeHeader(bw *bytes.Buffer, t byte) {
