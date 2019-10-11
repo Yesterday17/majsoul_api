@@ -5,15 +5,16 @@ import (
 	"github.com/gogo/protobuf/proto"
 )
 
-type Game struct {
-	socket
+type GameClient struct {
+	socketClient
 }
 
-func (l *Game) Init() error {
-	return l.socket.init("FastTest")
+func NewGameClient(url string) (*GameClient, error) {
+	client := &GameClient{}
+	return client, client.init("FastTest", url)
 }
 
-func (l *Game) AuthGame(in *lq.ReqAuthGame, ch chan *lq.ResAuthGame) {
+func (l *GameClient) AuthGame(in *lq.ReqAuthGame, ch chan *lq.ResAuthGame) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("authGame", req, func(msg []byte) {
 		data := &lq.ResAuthGame{}
@@ -23,7 +24,7 @@ func (l *Game) AuthGame(in *lq.ReqAuthGame, ch chan *lq.ResAuthGame) {
 	})
 }
 
-func (l *Game) EnterGame(in *lq.ReqCommon, ch chan *lq.ResEnterGame) {
+func (l *GameClient) EnterGame(in *lq.ReqCommon, ch chan *lq.ResEnterGame) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("enterGame", req, func(msg []byte) {
 		data := &lq.ResEnterGame{}
@@ -33,7 +34,7 @@ func (l *Game) EnterGame(in *lq.ReqCommon, ch chan *lq.ResEnterGame) {
 	})
 }
 
-func (l *Game) SyncGame(in *lq.ReqSyncGame, ch chan *lq.ResSyncGame) {
+func (l *GameClient) SyncGame(in *lq.ReqSyncGame, ch chan *lq.ResSyncGame) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("syncGame", req, func(msg []byte) {
 		data := &lq.ResSyncGame{}
@@ -43,7 +44,7 @@ func (l *Game) SyncGame(in *lq.ReqSyncGame, ch chan *lq.ResSyncGame) {
 	})
 }
 
-func (l *Game) FinishSyncGame(in *lq.ReqCommon, ch chan *lq.ResCommon) {
+func (l *GameClient) FinishSyncGame(in *lq.ReqCommon, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("finishSyncGame", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -53,7 +54,7 @@ func (l *Game) FinishSyncGame(in *lq.ReqCommon, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Game) TerminateGame(in *lq.ReqCommon, ch chan *lq.ResCommon) {
+func (l *GameClient) TerminateGame(in *lq.ReqCommon, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("terminateGame", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -63,7 +64,7 @@ func (l *Game) TerminateGame(in *lq.ReqCommon, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Game) InputOperation(in *lq.ReqSelfOperation, ch chan *lq.ResCommon) {
+func (l *GameClient) InputOperation(in *lq.ReqSelfOperation, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("inputOperation", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -73,7 +74,7 @@ func (l *Game) InputOperation(in *lq.ReqSelfOperation, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Game) InputChiPengGang(in *lq.ReqChiPengGang, ch chan *lq.ResCommon) {
+func (l *GameClient) InputChiPengGang(in *lq.ReqChiPengGang, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("inputChiPengGang", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -83,7 +84,7 @@ func (l *Game) InputChiPengGang(in *lq.ReqChiPengGang, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Game) ConfirmNewRound(ch chan *lq.ResCommon) {
+func (l *GameClient) ConfirmNewRound(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("confirmNewRound", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)
@@ -92,7 +93,7 @@ func (l *Game) ConfirmNewRound(ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Game) BroadcastInGame(in *lq.ReqBroadcastInGame, ch chan *lq.ResCommon) {
+func (l *GameClient) BroadcastInGame(in *lq.ReqBroadcastInGame, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("broadcastInGame", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -102,7 +103,7 @@ func (l *Game) BroadcastInGame(in *lq.ReqBroadcastInGame, ch chan *lq.ResCommon)
 	})
 }
 
-func (l *Game) InputGameGMCommand(in *lq.ReqGMCommandInGaming, ch chan *lq.ResCommon) {
+func (l *GameClient) InputGameGMCommand(in *lq.ReqGMCommandInGaming, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("inputGameGMCommand", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -112,7 +113,7 @@ func (l *Game) InputGameGMCommand(in *lq.ReqGMCommandInGaming, ch chan *lq.ResCo
 	})
 }
 
-func (l *Game) FetchGamePlayerState(ch chan *lq.ResGamePlayerState) {
+func (l *GameClient) FetchGamePlayerState(ch chan *lq.ResGamePlayerState) {
 	_ = l.sendRPC("fetchGamePlayerState", ReqCommon, func(msg []byte) {
 		data := &lq.ResGamePlayerState{}
 		_ = proto.Unmarshal(msg, data)
@@ -121,7 +122,7 @@ func (l *Game) FetchGamePlayerState(ch chan *lq.ResGamePlayerState) {
 	})
 }
 
-func (l *Game) CheckNetworkDelay(ch chan *lq.ResCommon) {
+func (l *GameClient) CheckNetworkDelay(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("checkNetworkDelay", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)

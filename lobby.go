@@ -5,15 +5,16 @@ import (
 	"github.com/gogo/protobuf/proto"
 )
 
-type Lobby struct {
-	socket
+type LobbyClient struct {
+	socketClient
 }
 
-func (l *Lobby) Init() error {
-	return l.socket.init("Lobby")
+func NewLobbyClient(url string) (*LobbyClient, error) {
+	client := &LobbyClient{}
+	return client, client.init("Lobby", url)
 }
 
-func (l *Lobby) FetchConnectionInfo(ch chan *lq.ResConnectionInfo) {
+func (l *LobbyClient) FetchConnectionInfo(ch chan *lq.ResConnectionInfo) {
 	_ = l.sendRPC("fetchConnectionInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResConnectionInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -22,7 +23,7 @@ func (l *Lobby) FetchConnectionInfo(ch chan *lq.ResConnectionInfo) {
 	})
 }
 
-func (l *Lobby) Signup(in *lq.ReqSignupAccount, ch chan *lq.ResSignupAccount) {
+func (l *LobbyClient) Signup(in *lq.ReqSignupAccount, ch chan *lq.ResSignupAccount) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("signup", req, func(msg []byte) {
 		data := &lq.ResSignupAccount{}
@@ -32,7 +33,7 @@ func (l *Lobby) Signup(in *lq.ReqSignupAccount, ch chan *lq.ResSignupAccount) {
 	})
 }
 
-func (l *Lobby) Login(in *lq.ReqLogin, ch chan *lq.ResLogin) {
+func (l *LobbyClient) Login(in *lq.ReqLogin, ch chan *lq.ResLogin) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("login", req, func(msg []byte) {
 		data := &lq.ResLogin{}
@@ -42,7 +43,7 @@ func (l *Lobby) Login(in *lq.ReqLogin, ch chan *lq.ResLogin) {
 	})
 }
 
-func (l *Lobby) EmailLogin(in *lq.ReqEmailLogin, ch chan *lq.ResLogin) {
+func (l *LobbyClient) EmailLogin(in *lq.ReqEmailLogin, ch chan *lq.ResLogin) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("emailLogin", req, func(msg []byte) {
 		data := &lq.ResLogin{}
@@ -52,7 +53,7 @@ func (l *Lobby) EmailLogin(in *lq.ReqEmailLogin, ch chan *lq.ResLogin) {
 	})
 }
 
-func (l *Lobby) Oauth2Auth(in *lq.ReqOauth2Auth, ch chan *lq.ResOauth2Auth) {
+func (l *LobbyClient) Oauth2Auth(in *lq.ReqOauth2Auth, ch chan *lq.ResOauth2Auth) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("oauth2Auth", req, func(msg []byte) {
 		data := &lq.ResOauth2Auth{}
@@ -62,7 +63,7 @@ func (l *Lobby) Oauth2Auth(in *lq.ReqOauth2Auth, ch chan *lq.ResOauth2Auth) {
 	})
 }
 
-func (l *Lobby) Oauth2Check(in *lq.ReqOauth2Check, ch chan *lq.ResOauth2Check) {
+func (l *LobbyClient) Oauth2Check(in *lq.ReqOauth2Check, ch chan *lq.ResOauth2Check) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("oauth2Check", req, func(msg []byte) {
 		data := &lq.ResOauth2Check{}
@@ -72,7 +73,7 @@ func (l *Lobby) Oauth2Check(in *lq.ReqOauth2Check, ch chan *lq.ResOauth2Check) {
 	})
 }
 
-func (l *Lobby) Oauth2Signup(in *lq.ReqOauth2Signup, ch chan *lq.ResOauth2Signup) {
+func (l *LobbyClient) Oauth2Signup(in *lq.ReqOauth2Signup, ch chan *lq.ResOauth2Signup) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("oauth2Signup", req, func(msg []byte) {
 		data := &lq.ResOauth2Signup{}
@@ -82,7 +83,7 @@ func (l *Lobby) Oauth2Signup(in *lq.ReqOauth2Signup, ch chan *lq.ResOauth2Signup
 	})
 }
 
-func (l *Lobby) Oauth2Login(in *lq.ReqOauth2Login, ch chan *lq.ResLogin) {
+func (l *LobbyClient) Oauth2Login(in *lq.ReqOauth2Login, ch chan *lq.ResLogin) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("oauth2Login", req, func(msg []byte) {
 		data := &lq.ResLogin{}
@@ -92,7 +93,7 @@ func (l *Lobby) Oauth2Login(in *lq.ReqOauth2Login, ch chan *lq.ResLogin) {
 	})
 }
 
-func (l *Lobby) CreatePhoneVerifyCode(in *lq.ReqCreatePhoneVerifyCode, ch chan *lq.ResCommon) {
+func (l *LobbyClient) CreatePhoneVerifyCode(in *lq.ReqCreatePhoneVerifyCode, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createPhoneVerifyCode", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -102,7 +103,7 @@ func (l *Lobby) CreatePhoneVerifyCode(in *lq.ReqCreatePhoneVerifyCode, ch chan *
 	})
 }
 
-func (l *Lobby) CreateEmailVerifyCode(in *lq.ReqCreateEmailVerifyCode, ch chan *lq.ResCommon) {
+func (l *LobbyClient) CreateEmailVerifyCode(in *lq.ReqCreateEmailVerifyCode, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createEmailVerifyCode", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -112,7 +113,7 @@ func (l *Lobby) CreateEmailVerifyCode(in *lq.ReqCreateEmailVerifyCode, ch chan *
 	})
 }
 
-func (l *Lobby) VerfifyCodeForSecure(in *lq.ReqVerifyCodeForSecure, ch chan *lq.ResVerfiyCodeForSecure) {
+func (l *LobbyClient) VerfifyCodeForSecure(in *lq.ReqVerifyCodeForSecure, ch chan *lq.ResVerfiyCodeForSecure) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("verfifyCodeForSecure", req, func(msg []byte) {
 		data := &lq.ResVerfiyCodeForSecure{}
@@ -122,7 +123,7 @@ func (l *Lobby) VerfifyCodeForSecure(in *lq.ReqVerifyCodeForSecure, ch chan *lq.
 	})
 }
 
-func (l *Lobby) BindPhoneNumber(in *lq.ReqBindPhoneNumber, ch chan *lq.ResCommon) {
+func (l *LobbyClient) BindPhoneNumber(in *lq.ReqBindPhoneNumber, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("bindPhoneNumber", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -132,7 +133,7 @@ func (l *Lobby) BindPhoneNumber(in *lq.ReqBindPhoneNumber, ch chan *lq.ResCommon
 	})
 }
 
-func (l *Lobby) BindEmail(in *lq.ReqBindEmail, ch chan *lq.ResCommon) {
+func (l *LobbyClient) BindEmail(in *lq.ReqBindEmail, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("bindEmail", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -142,7 +143,7 @@ func (l *Lobby) BindEmail(in *lq.ReqBindEmail, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) ModifyPassword(in *lq.ReqModifyPassword, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ModifyPassword(in *lq.ReqModifyPassword, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("modifyPassword", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -152,7 +153,7 @@ func (l *Lobby) ModifyPassword(in *lq.ReqModifyPassword, ch chan *lq.ResCommon) 
 	})
 }
 
-func (l *Lobby) BindAccount(in *lq.ReqBindAccount, ch chan *lq.ResCommon) {
+func (l *LobbyClient) BindAccount(in *lq.ReqBindAccount, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("bindAccount", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -162,7 +163,7 @@ func (l *Lobby) BindAccount(in *lq.ReqBindAccount, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) Logout(in *lq.ReqLogout, ch chan *lq.ResLogout) {
+func (l *LobbyClient) Logout(in *lq.ReqLogout, ch chan *lq.ResLogout) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("logout", req, func(msg []byte) {
 		data := &lq.ResLogout{}
@@ -172,7 +173,7 @@ func (l *Lobby) Logout(in *lq.ReqLogout, ch chan *lq.ResLogout) {
 	})
 }
 
-func (l *Lobby) Heatbeat(in *lq.ReqHeatBeat, ch chan *lq.ResCommon) {
+func (l *LobbyClient) Heatbeat(in *lq.ReqHeatBeat, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("heatbeat", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -182,7 +183,7 @@ func (l *Lobby) Heatbeat(in *lq.ReqHeatBeat, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) LoginBeat(in *lq.ReqLoginBeat, ch chan *lq.ResCommon) {
+func (l *LobbyClient) LoginBeat(in *lq.ReqLoginBeat, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("loginBeat", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -192,7 +193,7 @@ func (l *Lobby) LoginBeat(in *lq.ReqLoginBeat, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) CreateNickname(in *lq.ReqCreateNickname, ch chan *lq.ResCommon) {
+func (l *LobbyClient) CreateNickname(in *lq.ReqCreateNickname, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createNickname", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -202,7 +203,7 @@ func (l *Lobby) CreateNickname(in *lq.ReqCreateNickname, ch chan *lq.ResCommon) 
 	})
 }
 
-func (l *Lobby) ModifyNickname(in *lq.ReqModifyNickname, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ModifyNickname(in *lq.ReqModifyNickname, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("modifyNickname", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -212,7 +213,7 @@ func (l *Lobby) ModifyNickname(in *lq.ReqModifyNickname, ch chan *lq.ResCommon) 
 	})
 }
 
-func (l *Lobby) ModifyBirthday(in *lq.ReqModifyBirthday, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ModifyBirthday(in *lq.ReqModifyBirthday, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("modifyBirthday", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -222,7 +223,7 @@ func (l *Lobby) ModifyBirthday(in *lq.ReqModifyBirthday, ch chan *lq.ResCommon) 
 	})
 }
 
-func (l *Lobby) FetchRoom(ch chan *lq.ResSelfRoom) {
+func (l *LobbyClient) FetchRoom(ch chan *lq.ResSelfRoom) {
 	_ = l.sendRPC("fetchRoom", ReqCommon, func(msg []byte) {
 		data := &lq.ResSelfRoom{}
 		_ = proto.Unmarshal(msg, data)
@@ -231,7 +232,7 @@ func (l *Lobby) FetchRoom(ch chan *lq.ResSelfRoom) {
 	})
 }
 
-func (l *Lobby) CreateRoom(in *lq.ReqCreateRoom, ch chan *lq.ResCreateRoom) {
+func (l *LobbyClient) CreateRoom(in *lq.ReqCreateRoom, ch chan *lq.ResCreateRoom) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createRoom", req, func(msg []byte) {
 		data := &lq.ResCreateRoom{}
@@ -241,7 +242,7 @@ func (l *Lobby) CreateRoom(in *lq.ReqCreateRoom, ch chan *lq.ResCreateRoom) {
 	})
 }
 
-func (l *Lobby) JoinRoom(in *lq.ReqJoinRoom, ch chan *lq.ResJoinRoom) {
+func (l *LobbyClient) JoinRoom(in *lq.ReqJoinRoom, ch chan *lq.ResJoinRoom) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("joinRoom", req, func(msg []byte) {
 		data := &lq.ResJoinRoom{}
@@ -251,7 +252,7 @@ func (l *Lobby) JoinRoom(in *lq.ReqJoinRoom, ch chan *lq.ResJoinRoom) {
 	})
 }
 
-func (l *Lobby) LeaveRoom(ch chan *lq.ResCommon) {
+func (l *LobbyClient) LeaveRoom(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("leaveRoom", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)
@@ -260,7 +261,7 @@ func (l *Lobby) LeaveRoom(ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) ReadyPlay(in *lq.ReqRoomReady, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ReadyPlay(in *lq.ReqRoomReady, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("readyPlay", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -270,7 +271,7 @@ func (l *Lobby) ReadyPlay(in *lq.ReqRoomReady, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) StartRoom(in *lq.ReqRoomStart, ch chan *lq.ResCommon) {
+func (l *LobbyClient) StartRoom(in *lq.ReqRoomStart, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("startRoom", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -280,7 +281,7 @@ func (l *Lobby) StartRoom(in *lq.ReqRoomStart, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) KickPlayer(in *lq.ReqRoomKick, ch chan *lq.ResCommon) {
+func (l *LobbyClient) KickPlayer(in *lq.ReqRoomKick, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("kickPlayer", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -290,7 +291,7 @@ func (l *Lobby) KickPlayer(in *lq.ReqRoomKick, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) ModifyRoom(in *lq.ReqModifyRoom, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ModifyRoom(in *lq.ReqModifyRoom, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("modifyRoom", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -300,7 +301,7 @@ func (l *Lobby) ModifyRoom(in *lq.ReqModifyRoom, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) MatchGame(in *lq.ReqJoinMatchQueue, ch chan *lq.ResCommon) {
+func (l *LobbyClient) MatchGame(in *lq.ReqJoinMatchQueue, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("matchGame", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -310,7 +311,7 @@ func (l *Lobby) MatchGame(in *lq.ReqJoinMatchQueue, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) CancelMatch(in *lq.ReqCancelMatchQueue, ch chan *lq.ResCommon) {
+func (l *LobbyClient) CancelMatch(in *lq.ReqCancelMatchQueue, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("cancelMatch", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -320,7 +321,7 @@ func (l *Lobby) CancelMatch(in *lq.ReqCancelMatchQueue, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) FetchAccountInfo(in *lq.ReqAccountInfo, ch chan *lq.ResAccountInfo) {
+func (l *LobbyClient) FetchAccountInfo(in *lq.ReqAccountInfo, ch chan *lq.ResAccountInfo) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchAccountInfo", req, func(msg []byte) {
 		data := &lq.ResAccountInfo{}
@@ -330,7 +331,7 @@ func (l *Lobby) FetchAccountInfo(in *lq.ReqAccountInfo, ch chan *lq.ResAccountIn
 	})
 }
 
-func (l *Lobby) ChangeAvatar(in *lq.ReqChangeAvatar, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ChangeAvatar(in *lq.ReqChangeAvatar, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("changeAvatar", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -340,7 +341,7 @@ func (l *Lobby) ChangeAvatar(in *lq.ReqChangeAvatar, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) FetchAccountStatisticInfo(in *lq.ReqAccountStatisticInfo, ch chan *lq.ResAccountStatisticInfo) {
+func (l *LobbyClient) FetchAccountStatisticInfo(in *lq.ReqAccountStatisticInfo, ch chan *lq.ResAccountStatisticInfo) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchAccountStatisticInfo", req, func(msg []byte) {
 		data := &lq.ResAccountStatisticInfo{}
@@ -350,7 +351,7 @@ func (l *Lobby) FetchAccountStatisticInfo(in *lq.ReqAccountStatisticInfo, ch cha
 	})
 }
 
-func (l *Lobby) FetchAccountCharacterInfo(ch chan *lq.ResAccountCharacterInfo) {
+func (l *LobbyClient) FetchAccountCharacterInfo(ch chan *lq.ResAccountCharacterInfo) {
 	_ = l.sendRPC("fetchAccountCharacterInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResAccountCharacterInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -359,7 +360,7 @@ func (l *Lobby) FetchAccountCharacterInfo(ch chan *lq.ResAccountCharacterInfo) {
 	})
 }
 
-func (l *Lobby) ShopPurchase(in *lq.ReqShopPurchase, ch chan *lq.ResShopPurchase) {
+func (l *LobbyClient) ShopPurchase(in *lq.ReqShopPurchase, ch chan *lq.ResShopPurchase) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("shopPurchase", req, func(msg []byte) {
 		data := &lq.ResShopPurchase{}
@@ -369,7 +370,7 @@ func (l *Lobby) ShopPurchase(in *lq.ReqShopPurchase, ch chan *lq.ResShopPurchase
 	})
 }
 
-func (l *Lobby) FetchGameRecord(in *lq.ReqGameRecord, ch chan *lq.ResGameRecord) {
+func (l *LobbyClient) FetchGameRecord(in *lq.ReqGameRecord, ch chan *lq.ResGameRecord) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchGameRecord", req, func(msg []byte) {
 		data := &lq.ResGameRecord{}
@@ -379,7 +380,7 @@ func (l *Lobby) FetchGameRecord(in *lq.ReqGameRecord, ch chan *lq.ResGameRecord)
 	})
 }
 
-func (l *Lobby) FetchGameRecordList(in *lq.ReqGameRecordList, ch chan *lq.ResGameRecordList) {
+func (l *LobbyClient) FetchGameRecordList(in *lq.ReqGameRecordList, ch chan *lq.ResGameRecordList) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchGameRecordList", req, func(msg []byte) {
 		data := &lq.ResGameRecordList{}
@@ -389,7 +390,7 @@ func (l *Lobby) FetchGameRecordList(in *lq.ReqGameRecordList, ch chan *lq.ResGam
 	})
 }
 
-func (l *Lobby) FetchCollectedGameRecordList(ch chan *lq.ResCollectedGameRecordList) {
+func (l *LobbyClient) FetchCollectedGameRecordList(ch chan *lq.ResCollectedGameRecordList) {
 	_ = l.sendRPC("fetchCollectedGameRecordList", ReqCommon, func(msg []byte) {
 		data := &lq.ResCollectedGameRecordList{}
 		_ = proto.Unmarshal(msg, data)
@@ -398,7 +399,7 @@ func (l *Lobby) FetchCollectedGameRecordList(ch chan *lq.ResCollectedGameRecordL
 	})
 }
 
-func (l *Lobby) FetchGameRecordsDetail(in *lq.ReqGameRecordsDetail, ch chan *lq.ResGameRecordsDetail) {
+func (l *LobbyClient) FetchGameRecordsDetail(in *lq.ReqGameRecordsDetail, ch chan *lq.ResGameRecordsDetail) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchGameRecordsDetail", req, func(msg []byte) {
 		data := &lq.ResGameRecordsDetail{}
@@ -408,7 +409,7 @@ func (l *Lobby) FetchGameRecordsDetail(in *lq.ReqGameRecordsDetail, ch chan *lq.
 	})
 }
 
-func (l *Lobby) AddCollectedGameRecord(in *lq.ReqAddCollectedGameRecord, ch chan *lq.ResAddCollectedGameRecord) {
+func (l *LobbyClient) AddCollectedGameRecord(in *lq.ReqAddCollectedGameRecord, ch chan *lq.ResAddCollectedGameRecord) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("addCollectedGameRecord", req, func(msg []byte) {
 		data := &lq.ResAddCollectedGameRecord{}
@@ -418,7 +419,7 @@ func (l *Lobby) AddCollectedGameRecord(in *lq.ReqAddCollectedGameRecord, ch chan
 	})
 }
 
-func (l *Lobby) RemoveCollectedGameRecord(in *lq.ReqRemoveCollectedGameRecord, ch chan *lq.ResRemoveCollectedGameRecord) {
+func (l *LobbyClient) RemoveCollectedGameRecord(in *lq.ReqRemoveCollectedGameRecord, ch chan *lq.ResRemoveCollectedGameRecord) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("removeCollectedGameRecord", req, func(msg []byte) {
 		data := &lq.ResRemoveCollectedGameRecord{}
@@ -428,7 +429,7 @@ func (l *Lobby) RemoveCollectedGameRecord(in *lq.ReqRemoveCollectedGameRecord, c
 	})
 }
 
-func (l *Lobby) ChangeCollectedGameRecordRemarks(in *lq.ReqChangeCollectedGameRecordRemarks, ch chan *lq.ResChangeCollectedGameRecordRemarks) {
+func (l *LobbyClient) ChangeCollectedGameRecordRemarks(in *lq.ReqChangeCollectedGameRecordRemarks, ch chan *lq.ResChangeCollectedGameRecordRemarks) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("changeCollectedGameRecordRemarks", req, func(msg []byte) {
 		data := &lq.ResChangeCollectedGameRecordRemarks{}
@@ -438,7 +439,7 @@ func (l *Lobby) ChangeCollectedGameRecordRemarks(in *lq.ReqChangeCollectedGameRe
 	})
 }
 
-func (l *Lobby) FetchLevelLeaderboard(in *lq.ReqLevelLeaderboard, ch chan *lq.ResLevelLeaderboard) {
+func (l *LobbyClient) FetchLevelLeaderboard(in *lq.ReqLevelLeaderboard, ch chan *lq.ResLevelLeaderboard) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchLevelLeaderboard", req, func(msg []byte) {
 		data := &lq.ResLevelLeaderboard{}
@@ -448,7 +449,7 @@ func (l *Lobby) FetchLevelLeaderboard(in *lq.ReqLevelLeaderboard, ch chan *lq.Re
 	})
 }
 
-func (l *Lobby) FetchMultiAccountBrief(in *lq.ReqMultiAccountId, ch chan *lq.ResMultiAccountBrief) {
+func (l *LobbyClient) FetchMultiAccountBrief(in *lq.ReqMultiAccountId, ch chan *lq.ResMultiAccountBrief) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchMultiAccountBrief", req, func(msg []byte) {
 		data := &lq.ResMultiAccountBrief{}
@@ -458,7 +459,7 @@ func (l *Lobby) FetchMultiAccountBrief(in *lq.ReqMultiAccountId, ch chan *lq.Res
 	})
 }
 
-func (l *Lobby) FetchFriendList(ch chan *lq.ResFriendList) {
+func (l *LobbyClient) FetchFriendList(ch chan *lq.ResFriendList) {
 	_ = l.sendRPC("fetchFriendList", ReqCommon, func(msg []byte) {
 		data := &lq.ResFriendList{}
 		_ = proto.Unmarshal(msg, data)
@@ -467,7 +468,7 @@ func (l *Lobby) FetchFriendList(ch chan *lq.ResFriendList) {
 	})
 }
 
-func (l *Lobby) FetchFriendApplyList(ch chan *lq.ResFriendApplyList) {
+func (l *LobbyClient) FetchFriendApplyList(ch chan *lq.ResFriendApplyList) {
 	_ = l.sendRPC("fetchFriendApplyList", ReqCommon, func(msg []byte) {
 		data := &lq.ResFriendApplyList{}
 		_ = proto.Unmarshal(msg, data)
@@ -476,7 +477,7 @@ func (l *Lobby) FetchFriendApplyList(ch chan *lq.ResFriendApplyList) {
 	})
 }
 
-func (l *Lobby) ApplyFriend(in *lq.ReqApplyFriend, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ApplyFriend(in *lq.ReqApplyFriend, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("applyFriend", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -486,7 +487,7 @@ func (l *Lobby) ApplyFriend(in *lq.ReqApplyFriend, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) HandleFriendApply(in *lq.ReqHandleFriendApply, ch chan *lq.ResCommon) {
+func (l *LobbyClient) HandleFriendApply(in *lq.ReqHandleFriendApply, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("handleFriendApply", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -496,7 +497,7 @@ func (l *Lobby) HandleFriendApply(in *lq.ReqHandleFriendApply, ch chan *lq.ResCo
 	})
 }
 
-func (l *Lobby) RemoveFriend(in *lq.ReqRemoveFriend, ch chan *lq.ResCommon) {
+func (l *LobbyClient) RemoveFriend(in *lq.ReqRemoveFriend, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("removeFriend", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -506,7 +507,7 @@ func (l *Lobby) RemoveFriend(in *lq.ReqRemoveFriend, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) SearchAccountById(in *lq.ReqSearchAccountById, ch chan *lq.ResSearchAccountById) {
+func (l *LobbyClient) SearchAccountById(in *lq.ReqSearchAccountById, ch chan *lq.ResSearchAccountById) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("searchAccountById", req, func(msg []byte) {
 		data := &lq.ResSearchAccountById{}
@@ -516,7 +517,7 @@ func (l *Lobby) SearchAccountById(in *lq.ReqSearchAccountById, ch chan *lq.ResSe
 	})
 }
 
-func (l *Lobby) SearchAccountByPattern(in *lq.ReqSearchAccountByPattern, ch chan *lq.ResSearchAccountByPattern) {
+func (l *LobbyClient) SearchAccountByPattern(in *lq.ReqSearchAccountByPattern, ch chan *lq.ResSearchAccountByPattern) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("searchAccountByPattern", req, func(msg []byte) {
 		data := &lq.ResSearchAccountByPattern{}
@@ -526,7 +527,7 @@ func (l *Lobby) SearchAccountByPattern(in *lq.ReqSearchAccountByPattern, ch chan
 	})
 }
 
-func (l *Lobby) FetchAccountState(in *lq.ReqAccountList, ch chan *lq.ResAccountStates) {
+func (l *LobbyClient) FetchAccountState(in *lq.ReqAccountList, ch chan *lq.ResAccountStates) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchAccountState", req, func(msg []byte) {
 		data := &lq.ResAccountStates{}
@@ -536,7 +537,7 @@ func (l *Lobby) FetchAccountState(in *lq.ReqAccountList, ch chan *lq.ResAccountS
 	})
 }
 
-func (l *Lobby) FetchBagInfo(ch chan *lq.ResBagInfo) {
+func (l *LobbyClient) FetchBagInfo(ch chan *lq.ResBagInfo) {
 	_ = l.sendRPC("fetchBagInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResBagInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -545,7 +546,7 @@ func (l *Lobby) FetchBagInfo(ch chan *lq.ResBagInfo) {
 	})
 }
 
-func (l *Lobby) UseBagItem(in *lq.ReqUseBagItem, ch chan *lq.ResCommon) {
+func (l *LobbyClient) UseBagItem(in *lq.ReqUseBagItem, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("useBagItem", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -555,7 +556,7 @@ func (l *Lobby) UseBagItem(in *lq.ReqUseBagItem, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) OpenManualItem(in *lq.ReqOpenManualItem, ch chan *lq.ResCommon) {
+func (l *LobbyClient) OpenManualItem(in *lq.ReqOpenManualItem, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("openManualItem", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -565,7 +566,7 @@ func (l *Lobby) OpenManualItem(in *lq.ReqOpenManualItem, ch chan *lq.ResCommon) 
 	})
 }
 
-func (l *Lobby) OpenRandomRewardItem(in *lq.ReqOpenRandomRewardItem, ch chan *lq.ResOpenRandomRewardItem) {
+func (l *LobbyClient) OpenRandomRewardItem(in *lq.ReqOpenRandomRewardItem, ch chan *lq.ResOpenRandomRewardItem) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("openRandomRewardItem", req, func(msg []byte) {
 		data := &lq.ResOpenRandomRewardItem{}
@@ -575,7 +576,7 @@ func (l *Lobby) OpenRandomRewardItem(in *lq.ReqOpenRandomRewardItem, ch chan *lq
 	})
 }
 
-func (l *Lobby) ComposeShard(in *lq.ReqComposeShard, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ComposeShard(in *lq.ReqComposeShard, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("composeShard", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -585,7 +586,7 @@ func (l *Lobby) ComposeShard(in *lq.ReqComposeShard, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) FetchAnnouncement(ch chan *lq.ResAnnouncement) {
+func (l *LobbyClient) FetchAnnouncement(ch chan *lq.ResAnnouncement) {
 	_ = l.sendRPC("fetchAnnouncement", ReqCommon, func(msg []byte) {
 		data := &lq.ResAnnouncement{}
 		_ = proto.Unmarshal(msg, data)
@@ -594,7 +595,7 @@ func (l *Lobby) FetchAnnouncement(ch chan *lq.ResAnnouncement) {
 	})
 }
 
-func (l *Lobby) ReadAnnouncement(in *lq.ReqReadAnnouncement, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ReadAnnouncement(in *lq.ReqReadAnnouncement, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("readAnnouncement", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -604,7 +605,7 @@ func (l *Lobby) ReadAnnouncement(in *lq.ReqReadAnnouncement, ch chan *lq.ResComm
 	})
 }
 
-func (l *Lobby) FetchMailInfo(ch chan *lq.ResMailInfo) {
+func (l *LobbyClient) FetchMailInfo(ch chan *lq.ResMailInfo) {
 	_ = l.sendRPC("fetchMailInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResMailInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -613,7 +614,7 @@ func (l *Lobby) FetchMailInfo(ch chan *lq.ResMailInfo) {
 	})
 }
 
-func (l *Lobby) ReadMail(in *lq.ReqReadMail, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ReadMail(in *lq.ReqReadMail, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("readMail", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -623,7 +624,7 @@ func (l *Lobby) ReadMail(in *lq.ReqReadMail, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) DeleteMail(in *lq.ReqDeleteMail, ch chan *lq.ResCommon) {
+func (l *LobbyClient) DeleteMail(in *lq.ReqDeleteMail, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("deleteMail", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -633,7 +634,7 @@ func (l *Lobby) DeleteMail(in *lq.ReqDeleteMail, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) TakeAttachmentFromMail(in *lq.ReqTakeAttachment, ch chan *lq.ResCommon) {
+func (l *LobbyClient) TakeAttachmentFromMail(in *lq.ReqTakeAttachment, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("takeAttachmentFromMail", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -643,7 +644,7 @@ func (l *Lobby) TakeAttachmentFromMail(in *lq.ReqTakeAttachment, ch chan *lq.Res
 	})
 }
 
-func (l *Lobby) FetchAchievement(ch chan *lq.ResAchievement) {
+func (l *LobbyClient) FetchAchievement(ch chan *lq.ResAchievement) {
 	_ = l.sendRPC("fetchAchievement", ReqCommon, func(msg []byte) {
 		data := &lq.ResAchievement{}
 		_ = proto.Unmarshal(msg, data)
@@ -652,7 +653,7 @@ func (l *Lobby) FetchAchievement(ch chan *lq.ResAchievement) {
 	})
 }
 
-func (l *Lobby) BuyShiLian(in *lq.ReqBuyShiLian, ch chan *lq.ResCommon) {
+func (l *LobbyClient) BuyShiLian(in *lq.ReqBuyShiLian, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("buyShiLian", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -662,7 +663,7 @@ func (l *Lobby) BuyShiLian(in *lq.ReqBuyShiLian, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) MatchShiLian(ch chan *lq.ResCommon) {
+func (l *LobbyClient) MatchShiLian(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("matchShiLian", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)
@@ -671,7 +672,7 @@ func (l *Lobby) MatchShiLian(ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) GoNextShiLian(ch chan *lq.ResCommon) {
+func (l *LobbyClient) GoNextShiLian(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("goNextShiLian", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)
@@ -680,7 +681,7 @@ func (l *Lobby) GoNextShiLian(ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) UpdateClientValue(in *lq.ReqUpdateClientValue, ch chan *lq.ResCommon) {
+func (l *LobbyClient) UpdateClientValue(in *lq.ReqUpdateClientValue, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("updateClientValue", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -690,7 +691,7 @@ func (l *Lobby) UpdateClientValue(in *lq.ReqUpdateClientValue, ch chan *lq.ResCo
 	})
 }
 
-func (l *Lobby) FetchClientValue(ch chan *lq.ResClientValue) {
+func (l *LobbyClient) FetchClientValue(ch chan *lq.ResClientValue) {
 	_ = l.sendRPC("fetchClientValue", ReqCommon, func(msg []byte) {
 		data := &lq.ResClientValue{}
 		_ = proto.Unmarshal(msg, data)
@@ -699,7 +700,7 @@ func (l *Lobby) FetchClientValue(ch chan *lq.ResClientValue) {
 	})
 }
 
-func (l *Lobby) ClientMessage(in *lq.ReqClientMessage, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ClientMessage(in *lq.ReqClientMessage, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("clientMessage", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -709,7 +710,7 @@ func (l *Lobby) ClientMessage(in *lq.ReqClientMessage, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) FetchCurrentMatchInfo(in *lq.ReqCurrentMatchInfo, ch chan *lq.ResCurrentMatchInfo) {
+func (l *LobbyClient) FetchCurrentMatchInfo(in *lq.ReqCurrentMatchInfo, ch chan *lq.ResCurrentMatchInfo) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchCurrentMatchInfo", req, func(msg []byte) {
 		data := &lq.ResCurrentMatchInfo{}
@@ -719,7 +720,7 @@ func (l *Lobby) FetchCurrentMatchInfo(in *lq.ReqCurrentMatchInfo, ch chan *lq.Re
 	})
 }
 
-func (l *Lobby) FetchReviveCoinInfo(ch chan *lq.ResReviveCoinInfo) {
+func (l *LobbyClient) FetchReviveCoinInfo(ch chan *lq.ResReviveCoinInfo) {
 	_ = l.sendRPC("fetchReviveCoinInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResReviveCoinInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -728,7 +729,7 @@ func (l *Lobby) FetchReviveCoinInfo(ch chan *lq.ResReviveCoinInfo) {
 	})
 }
 
-func (l *Lobby) GainReviveCoin(ch chan *lq.ResCommon) {
+func (l *LobbyClient) GainReviveCoin(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("gainReviveCoin", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)
@@ -737,7 +738,7 @@ func (l *Lobby) GainReviveCoin(ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) FetchDailyTask(ch chan *lq.ResDailyTask) {
+func (l *LobbyClient) FetchDailyTask(ch chan *lq.ResDailyTask) {
 	_ = l.sendRPC("fetchDailyTask", ReqCommon, func(msg []byte) {
 		data := &lq.ResDailyTask{}
 		_ = proto.Unmarshal(msg, data)
@@ -746,7 +747,7 @@ func (l *Lobby) FetchDailyTask(ch chan *lq.ResDailyTask) {
 	})
 }
 
-func (l *Lobby) RefreshDailyTask(in *lq.ReqRefreshDailyTask, ch chan *lq.ResRefreshDailyTask) {
+func (l *LobbyClient) RefreshDailyTask(in *lq.ReqRefreshDailyTask, ch chan *lq.ResRefreshDailyTask) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("refreshDailyTask", req, func(msg []byte) {
 		data := &lq.ResRefreshDailyTask{}
@@ -756,7 +757,7 @@ func (l *Lobby) RefreshDailyTask(in *lq.ReqRefreshDailyTask, ch chan *lq.ResRefr
 	})
 }
 
-func (l *Lobby) UseGiftCode(in *lq.ReqUseGiftCode, ch chan *lq.ResUseGiftCode) {
+func (l *LobbyClient) UseGiftCode(in *lq.ReqUseGiftCode, ch chan *lq.ResUseGiftCode) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("useGiftCode", req, func(msg []byte) {
 		data := &lq.ResUseGiftCode{}
@@ -766,7 +767,7 @@ func (l *Lobby) UseGiftCode(in *lq.ReqUseGiftCode, ch chan *lq.ResUseGiftCode) {
 	})
 }
 
-func (l *Lobby) FetchTitleList(ch chan *lq.ResTitleList) {
+func (l *LobbyClient) FetchTitleList(ch chan *lq.ResTitleList) {
 	_ = l.sendRPC("fetchTitleList", ReqCommon, func(msg []byte) {
 		data := &lq.ResTitleList{}
 		_ = proto.Unmarshal(msg, data)
@@ -775,7 +776,7 @@ func (l *Lobby) FetchTitleList(ch chan *lq.ResTitleList) {
 	})
 }
 
-func (l *Lobby) UseTitle(in *lq.ReqUseTitle, ch chan *lq.ResCommon) {
+func (l *LobbyClient) UseTitle(in *lq.ReqUseTitle, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("useTitle", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -785,7 +786,7 @@ func (l *Lobby) UseTitle(in *lq.ReqUseTitle, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) SendClientMessage(in *lq.ReqSendClientMessage, ch chan *lq.ResCommon) {
+func (l *LobbyClient) SendClientMessage(in *lq.ReqSendClientMessage, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("sendClientMessage", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -795,7 +796,7 @@ func (l *Lobby) SendClientMessage(in *lq.ReqSendClientMessage, ch chan *lq.ResCo
 	})
 }
 
-func (l *Lobby) FetchGameLiveInfo(in *lq.ReqGameLiveInfo, ch chan *lq.ResGameLiveInfo) {
+func (l *LobbyClient) FetchGameLiveInfo(in *lq.ReqGameLiveInfo, ch chan *lq.ResGameLiveInfo) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchGameLiveInfo", req, func(msg []byte) {
 		data := &lq.ResGameLiveInfo{}
@@ -805,7 +806,7 @@ func (l *Lobby) FetchGameLiveInfo(in *lq.ReqGameLiveInfo, ch chan *lq.ResGameLiv
 	})
 }
 
-func (l *Lobby) FetchGameLiveLeftSegment(in *lq.ReqGameLiveLeftSegment, ch chan *lq.ResGameLiveLeftSegment) {
+func (l *LobbyClient) FetchGameLiveLeftSegment(in *lq.ReqGameLiveLeftSegment, ch chan *lq.ResGameLiveLeftSegment) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchGameLiveLeftSegment", req, func(msg []byte) {
 		data := &lq.ResGameLiveLeftSegment{}
@@ -815,7 +816,7 @@ func (l *Lobby) FetchGameLiveLeftSegment(in *lq.ReqGameLiveLeftSegment, ch chan 
 	})
 }
 
-func (l *Lobby) FetchGameLiveList(in *lq.ReqGameLiveList, ch chan *lq.ResGameLiveList) {
+func (l *LobbyClient) FetchGameLiveList(in *lq.ReqGameLiveList, ch chan *lq.ResGameLiveList) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchGameLiveList", req, func(msg []byte) {
 		data := &lq.ResGameLiveList{}
@@ -825,7 +826,7 @@ func (l *Lobby) FetchGameLiveList(in *lq.ReqGameLiveList, ch chan *lq.ResGameLiv
 	})
 }
 
-func (l *Lobby) FetchCommentSetting(ch chan *lq.ResCommentSetting) {
+func (l *LobbyClient) FetchCommentSetting(ch chan *lq.ResCommentSetting) {
 	_ = l.sendRPC("fetchCommentSetting", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommentSetting{}
 		_ = proto.Unmarshal(msg, data)
@@ -834,7 +835,7 @@ func (l *Lobby) FetchCommentSetting(ch chan *lq.ResCommentSetting) {
 	})
 }
 
-func (l *Lobby) UpdateCommentSetting(in *lq.ReqUpdateCommentSetting, ch chan *lq.ResCommon) {
+func (l *LobbyClient) UpdateCommentSetting(in *lq.ReqUpdateCommentSetting, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("updateCommentSetting", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -844,7 +845,7 @@ func (l *Lobby) UpdateCommentSetting(in *lq.ReqUpdateCommentSetting, ch chan *lq
 	})
 }
 
-func (l *Lobby) FetchCommentList(in *lq.ReqFetchCommentList, ch chan *lq.ResFetchCommentList) {
+func (l *LobbyClient) FetchCommentList(in *lq.ReqFetchCommentList, ch chan *lq.ResFetchCommentList) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchCommentList", req, func(msg []byte) {
 		data := &lq.ResFetchCommentList{}
@@ -854,7 +855,7 @@ func (l *Lobby) FetchCommentList(in *lq.ReqFetchCommentList, ch chan *lq.ResFetc
 	})
 }
 
-func (l *Lobby) FetchCommentContent(in *lq.ReqFetchCommentContent, ch chan *lq.ResFetchCommentContent) {
+func (l *LobbyClient) FetchCommentContent(in *lq.ReqFetchCommentContent, ch chan *lq.ResFetchCommentContent) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchCommentContent", req, func(msg []byte) {
 		data := &lq.ResFetchCommentContent{}
@@ -864,7 +865,7 @@ func (l *Lobby) FetchCommentContent(in *lq.ReqFetchCommentContent, ch chan *lq.R
 	})
 }
 
-func (l *Lobby) LeaveComment(in *lq.ReqLeaveComment, ch chan *lq.ResCommon) {
+func (l *LobbyClient) LeaveComment(in *lq.ReqLeaveComment, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("leaveComment", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -874,7 +875,7 @@ func (l *Lobby) LeaveComment(in *lq.ReqLeaveComment, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) DeleteComment(in *lq.ReqDeleteComment, ch chan *lq.ResCommon) {
+func (l *LobbyClient) DeleteComment(in *lq.ReqDeleteComment, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("deleteComment", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -884,7 +885,7 @@ func (l *Lobby) DeleteComment(in *lq.ReqDeleteComment, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) UpdateReadComment(in *lq.ReqUpdateReadComment, ch chan *lq.ResCommon) {
+func (l *LobbyClient) UpdateReadComment(in *lq.ReqUpdateReadComment, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("updateReadComment", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -894,7 +895,7 @@ func (l *Lobby) UpdateReadComment(in *lq.ReqUpdateReadComment, ch chan *lq.ResCo
 	})
 }
 
-func (l *Lobby) FetchRollingNotice(ch chan *lq.ReqRollingNotice) {
+func (l *LobbyClient) FetchRollingNotice(ch chan *lq.ReqRollingNotice) {
 	_ = l.sendRPC("fetchRollingNotice", ReqCommon, func(msg []byte) {
 		data := &lq.ReqRollingNotice{}
 		_ = proto.Unmarshal(msg, data)
@@ -903,7 +904,7 @@ func (l *Lobby) FetchRollingNotice(ch chan *lq.ReqRollingNotice) {
 	})
 }
 
-func (l *Lobby) FetchServerTime(ch chan *lq.ResServerTime) {
+func (l *LobbyClient) FetchServerTime(ch chan *lq.ResServerTime) {
 	_ = l.sendRPC("fetchServerTime", ReqCommon, func(msg []byte) {
 		data := &lq.ResServerTime{}
 		_ = proto.Unmarshal(msg, data)
@@ -912,7 +913,7 @@ func (l *Lobby) FetchServerTime(ch chan *lq.ResServerTime) {
 	})
 }
 
-func (l *Lobby) FetchPlatformProducts(in *lq.ReqPlatformBillingProducts, ch chan *lq.ResPlatformBillingProducts) {
+func (l *LobbyClient) FetchPlatformProducts(in *lq.ReqPlatformBillingProducts, ch chan *lq.ResPlatformBillingProducts) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchPlatformProducts", req, func(msg []byte) {
 		data := &lq.ResPlatformBillingProducts{}
@@ -922,7 +923,7 @@ func (l *Lobby) FetchPlatformProducts(in *lq.ReqPlatformBillingProducts, ch chan
 	})
 }
 
-func (l *Lobby) CreateBillingOrder(in *lq.ReqCreateBillingOrder, ch chan *lq.ResCreateBillingOrder) {
+func (l *LobbyClient) CreateBillingOrder(in *lq.ReqCreateBillingOrder, ch chan *lq.ResCreateBillingOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createBillingOrder", req, func(msg []byte) {
 		data := &lq.ResCreateBillingOrder{}
@@ -932,7 +933,7 @@ func (l *Lobby) CreateBillingOrder(in *lq.ReqCreateBillingOrder, ch chan *lq.Res
 	})
 }
 
-func (l *Lobby) SolveGooglePlayOrder(in *lq.ReqSolveGooglePlayOrder, ch chan *lq.ResCommon) {
+func (l *LobbyClient) SolveGooglePlayOrder(in *lq.ReqSolveGooglePlayOrder, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("solveGooglePlayOrder", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -942,7 +943,7 @@ func (l *Lobby) SolveGooglePlayOrder(in *lq.ReqSolveGooglePlayOrder, ch chan *lq
 	})
 }
 
-func (l *Lobby) CancelGooglePlayOrder(in *lq.ReqCancelGooglePlayOrder, ch chan *lq.ResCommon) {
+func (l *LobbyClient) CancelGooglePlayOrder(in *lq.ReqCancelGooglePlayOrder, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("cancelGooglePlayOrder", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -952,7 +953,7 @@ func (l *Lobby) CancelGooglePlayOrder(in *lq.ReqCancelGooglePlayOrder, ch chan *
 	})
 }
 
-func (l *Lobby) OpenChest(in *lq.ReqOpenChest, ch chan *lq.ResOpenChest) {
+func (l *LobbyClient) OpenChest(in *lq.ReqOpenChest, ch chan *lq.ResOpenChest) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("openChest", req, func(msg []byte) {
 		data := &lq.ResOpenChest{}
@@ -962,7 +963,7 @@ func (l *Lobby) OpenChest(in *lq.ReqOpenChest, ch chan *lq.ResOpenChest) {
 	})
 }
 
-func (l *Lobby) BuyFromChestShop(in *lq.ReqBuyFromChestShop, ch chan *lq.ResBuyFromChestShop) {
+func (l *LobbyClient) BuyFromChestShop(in *lq.ReqBuyFromChestShop, ch chan *lq.ResBuyFromChestShop) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("buyFromChestShop", req, func(msg []byte) {
 		data := &lq.ResBuyFromChestShop{}
@@ -972,7 +973,7 @@ func (l *Lobby) BuyFromChestShop(in *lq.ReqBuyFromChestShop, ch chan *lq.ResBuyF
 	})
 }
 
-func (l *Lobby) FetchDailySignInInfo(ch chan *lq.ResDailySignInInfo) {
+func (l *LobbyClient) FetchDailySignInInfo(ch chan *lq.ResDailySignInInfo) {
 	_ = l.sendRPC("fetchDailySignInInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResDailySignInInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -981,7 +982,7 @@ func (l *Lobby) FetchDailySignInInfo(ch chan *lq.ResDailySignInInfo) {
 	})
 }
 
-func (l *Lobby) DoDailySignIn(ch chan *lq.ResCommon) {
+func (l *LobbyClient) DoDailySignIn(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("doDailySignIn", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)
@@ -990,7 +991,7 @@ func (l *Lobby) DoDailySignIn(ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) DoActivitySignIn(in *lq.ReqDoActivitySignIn, ch chan *lq.ResDoActivitySignIn) {
+func (l *LobbyClient) DoActivitySignIn(in *lq.ReqDoActivitySignIn, ch chan *lq.ResDoActivitySignIn) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("doActivitySignIn", req, func(msg []byte) {
 		data := &lq.ResDoActivitySignIn{}
@@ -1000,7 +1001,7 @@ func (l *Lobby) DoActivitySignIn(in *lq.ReqDoActivitySignIn, ch chan *lq.ResDoAc
 	})
 }
 
-func (l *Lobby) FetchCharacterInfo(ch chan *lq.ResCharacterInfo) {
+func (l *LobbyClient) FetchCharacterInfo(ch chan *lq.ResCharacterInfo) {
 	_ = l.sendRPC("fetchCharacterInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResCharacterInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -1009,7 +1010,7 @@ func (l *Lobby) FetchCharacterInfo(ch chan *lq.ResCharacterInfo) {
 	})
 }
 
-func (l *Lobby) ChangeMainCharacter(in *lq.ReqChangeMainCharacter, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ChangeMainCharacter(in *lq.ReqChangeMainCharacter, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("changeMainCharacter", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1019,7 +1020,7 @@ func (l *Lobby) ChangeMainCharacter(in *lq.ReqChangeMainCharacter, ch chan *lq.R
 	})
 }
 
-func (l *Lobby) ChangeCharacterSkin(in *lq.ReqChangeCharacterSkin, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ChangeCharacterSkin(in *lq.ReqChangeCharacterSkin, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("changeCharacterSkin", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1029,7 +1030,7 @@ func (l *Lobby) ChangeCharacterSkin(in *lq.ReqChangeCharacterSkin, ch chan *lq.R
 	})
 }
 
-func (l *Lobby) ChangeCharacterView(in *lq.ReqChangeCharacterView, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ChangeCharacterView(in *lq.ReqChangeCharacterView, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("changeCharacterView", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1039,7 +1040,7 @@ func (l *Lobby) ChangeCharacterView(in *lq.ReqChangeCharacterView, ch chan *lq.R
 	})
 }
 
-func (l *Lobby) SendGiftToCharacter(in *lq.ReqSendGiftToCharacter, ch chan *lq.ResSendGiftToCharacter) {
+func (l *LobbyClient) SendGiftToCharacter(in *lq.ReqSendGiftToCharacter, ch chan *lq.ResSendGiftToCharacter) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("sendGiftToCharacter", req, func(msg []byte) {
 		data := &lq.ResSendGiftToCharacter{}
@@ -1049,7 +1050,7 @@ func (l *Lobby) SendGiftToCharacter(in *lq.ReqSendGiftToCharacter, ch chan *lq.R
 	})
 }
 
-func (l *Lobby) SellItem(in *lq.ReqSellItem, ch chan *lq.ResCommon) {
+func (l *LobbyClient) SellItem(in *lq.ReqSellItem, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("sellItem", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1059,7 +1060,7 @@ func (l *Lobby) SellItem(in *lq.ReqSellItem, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) FetchCommonView(ch chan *lq.ResCommonView) {
+func (l *LobbyClient) FetchCommonView(ch chan *lq.ResCommonView) {
 	_ = l.sendRPC("fetchCommonView", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommonView{}
 		_ = proto.Unmarshal(msg, data)
@@ -1068,7 +1069,7 @@ func (l *Lobby) FetchCommonView(ch chan *lq.ResCommonView) {
 	})
 }
 
-func (l *Lobby) ChangeCommonView(in *lq.ReqChangeCommonView, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ChangeCommonView(in *lq.ReqChangeCommonView, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("changeCommonView", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1078,7 +1079,7 @@ func (l *Lobby) ChangeCommonView(in *lq.ReqChangeCommonView, ch chan *lq.ResComm
 	})
 }
 
-func (l *Lobby) UpgradeCharacter(in *lq.ReqUpgradeCharacter, ch chan *lq.ResUpgradeCharacter) {
+func (l *LobbyClient) UpgradeCharacter(in *lq.ReqUpgradeCharacter, ch chan *lq.ResUpgradeCharacter) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("upgradeCharacter", req, func(msg []byte) {
 		data := &lq.ResUpgradeCharacter{}
@@ -1088,7 +1089,7 @@ func (l *Lobby) UpgradeCharacter(in *lq.ReqUpgradeCharacter, ch chan *lq.ResUpgr
 	})
 }
 
-func (l *Lobby) GameMasterCommand(in *lq.ReqGMCommand, ch chan *lq.ResCommon) {
+func (l *LobbyClient) GameMasterCommand(in *lq.ReqGMCommand, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("gameMasterCommand", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1098,7 +1099,7 @@ func (l *Lobby) GameMasterCommand(in *lq.ReqGMCommand, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) FetchShopInfo(ch chan *lq.ResShopInfo) {
+func (l *LobbyClient) FetchShopInfo(ch chan *lq.ResShopInfo) {
 	_ = l.sendRPC("fetchShopInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResShopInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -1107,7 +1108,7 @@ func (l *Lobby) FetchShopInfo(ch chan *lq.ResShopInfo) {
 	})
 }
 
-func (l *Lobby) BuyFromShop(in *lq.ReqBuyFromShop, ch chan *lq.ResBuyFromShop) {
+func (l *LobbyClient) BuyFromShop(in *lq.ReqBuyFromShop, ch chan *lq.ResBuyFromShop) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("buyFromShop", req, func(msg []byte) {
 		data := &lq.ResBuyFromShop{}
@@ -1117,7 +1118,7 @@ func (l *Lobby) BuyFromShop(in *lq.ReqBuyFromShop, ch chan *lq.ResBuyFromShop) {
 	})
 }
 
-func (l *Lobby) BuyFromZHP(in *lq.ReqBuyFromZHP, ch chan *lq.ResCommon) {
+func (l *LobbyClient) BuyFromZHP(in *lq.ReqBuyFromZHP, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("buyFromZHP", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1127,7 +1128,7 @@ func (l *Lobby) BuyFromZHP(in *lq.ReqBuyFromZHP, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) RefreshZHPShop(ch chan *lq.ResRefreshZHPShop) {
+func (l *LobbyClient) RefreshZHPShop(ch chan *lq.ResRefreshZHPShop) {
 	_ = l.sendRPC("refreshZHPShop", ReqCommon, func(msg []byte) {
 		data := &lq.ResRefreshZHPShop{}
 		_ = proto.Unmarshal(msg, data)
@@ -1136,7 +1137,7 @@ func (l *Lobby) RefreshZHPShop(ch chan *lq.ResRefreshZHPShop) {
 	})
 }
 
-func (l *Lobby) FetchMonthTicketInfo(ch chan *lq.ResMonthTicketInfo) {
+func (l *LobbyClient) FetchMonthTicketInfo(ch chan *lq.ResMonthTicketInfo) {
 	_ = l.sendRPC("fetchMonthTicketInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResMonthTicketInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -1145,7 +1146,7 @@ func (l *Lobby) FetchMonthTicketInfo(ch chan *lq.ResMonthTicketInfo) {
 	})
 }
 
-func (l *Lobby) PayMonthTicket(in *lq.ReqPayMonthTicket, ch chan *lq.ResPayMonthTicket) {
+func (l *LobbyClient) PayMonthTicket(in *lq.ReqPayMonthTicket, ch chan *lq.ResPayMonthTicket) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("payMonthTicket", req, func(msg []byte) {
 		data := &lq.ResPayMonthTicket{}
@@ -1155,7 +1156,7 @@ func (l *Lobby) PayMonthTicket(in *lq.ReqPayMonthTicket, ch chan *lq.ResPayMonth
 	})
 }
 
-func (l *Lobby) ExchangeCurrency(in *lq.ReqExchangeCurrency, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ExchangeCurrency(in *lq.ReqExchangeCurrency, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("exchangeCurrency", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1165,7 +1166,7 @@ func (l *Lobby) ExchangeCurrency(in *lq.ReqExchangeCurrency, ch chan *lq.ResComm
 	})
 }
 
-func (l *Lobby) ExchangeChestStone(in *lq.ReqExchangeCurrency, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ExchangeChestStone(in *lq.ReqExchangeCurrency, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("exchangeChestStone", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1175,7 +1176,7 @@ func (l *Lobby) ExchangeChestStone(in *lq.ReqExchangeCurrency, ch chan *lq.ResCo
 	})
 }
 
-func (l *Lobby) FetchServerSettings(ch chan *lq.ResServerSettings) {
+func (l *LobbyClient) FetchServerSettings(ch chan *lq.ResServerSettings) {
 	_ = l.sendRPC("fetchServerSettings", ReqCommon, func(msg []byte) {
 		data := &lq.ResServerSettings{}
 		_ = proto.Unmarshal(msg, data)
@@ -1184,7 +1185,7 @@ func (l *Lobby) FetchServerSettings(ch chan *lq.ResServerSettings) {
 	})
 }
 
-func (l *Lobby) FetchAccountSettings(ch chan *lq.ResAccountSettings) {
+func (l *LobbyClient) FetchAccountSettings(ch chan *lq.ResAccountSettings) {
 	_ = l.sendRPC("fetchAccountSettings", ReqCommon, func(msg []byte) {
 		data := &lq.ResAccountSettings{}
 		_ = proto.Unmarshal(msg, data)
@@ -1193,7 +1194,7 @@ func (l *Lobby) FetchAccountSettings(ch chan *lq.ResAccountSettings) {
 	})
 }
 
-func (l *Lobby) UpdateAccountSettings(in *lq.ReqUpdateAccountSettings, ch chan *lq.ResCommon) {
+func (l *LobbyClient) UpdateAccountSettings(in *lq.ReqUpdateAccountSettings, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("updateAccountSettings", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1203,7 +1204,7 @@ func (l *Lobby) UpdateAccountSettings(in *lq.ReqUpdateAccountSettings, ch chan *
 	})
 }
 
-func (l *Lobby) FetchModNicknameTime(ch chan *lq.ResModNicknameTime) {
+func (l *LobbyClient) FetchModNicknameTime(ch chan *lq.ResModNicknameTime) {
 	_ = l.sendRPC("fetchModNicknameTime", ReqCommon, func(msg []byte) {
 		data := &lq.ResModNicknameTime{}
 		_ = proto.Unmarshal(msg, data)
@@ -1212,7 +1213,7 @@ func (l *Lobby) FetchModNicknameTime(ch chan *lq.ResModNicknameTime) {
 	})
 }
 
-func (l *Lobby) CreateWechatNativeOrder(in *lq.ReqCreateWechatNativeOrder, ch chan *lq.ResCreateWechatNativeOrder) {
+func (l *LobbyClient) CreateWechatNativeOrder(in *lq.ReqCreateWechatNativeOrder, ch chan *lq.ResCreateWechatNativeOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createWechatNativeOrder", req, func(msg []byte) {
 		data := &lq.ResCreateWechatNativeOrder{}
@@ -1222,7 +1223,7 @@ func (l *Lobby) CreateWechatNativeOrder(in *lq.ReqCreateWechatNativeOrder, ch ch
 	})
 }
 
-func (l *Lobby) CreateWechatAppOrder(in *lq.ReqCreateWechatAppOrder, ch chan *lq.ResCreateWechatAppOrder) {
+func (l *LobbyClient) CreateWechatAppOrder(in *lq.ReqCreateWechatAppOrder, ch chan *lq.ResCreateWechatAppOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createWechatAppOrder", req, func(msg []byte) {
 		data := &lq.ResCreateWechatAppOrder{}
@@ -1232,7 +1233,7 @@ func (l *Lobby) CreateWechatAppOrder(in *lq.ReqCreateWechatAppOrder, ch chan *lq
 	})
 }
 
-func (l *Lobby) CreateAlipayOrder(in *lq.ReqCreateAlipayOrder, ch chan *lq.ResCreateAlipayOrder) {
+func (l *LobbyClient) CreateAlipayOrder(in *lq.ReqCreateAlipayOrder, ch chan *lq.ResCreateAlipayOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createAlipayOrder", req, func(msg []byte) {
 		data := &lq.ResCreateAlipayOrder{}
@@ -1242,7 +1243,7 @@ func (l *Lobby) CreateAlipayOrder(in *lq.ReqCreateAlipayOrder, ch chan *lq.ResCr
 	})
 }
 
-func (l *Lobby) CreateAlipayScanOrder(in *lq.ReqCreateAlipayScanOrder, ch chan *lq.ResCreateAlipayScanOrder) {
+func (l *LobbyClient) CreateAlipayScanOrder(in *lq.ReqCreateAlipayScanOrder, ch chan *lq.ResCreateAlipayScanOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createAlipayScanOrder", req, func(msg []byte) {
 		data := &lq.ResCreateAlipayScanOrder{}
@@ -1252,7 +1253,7 @@ func (l *Lobby) CreateAlipayScanOrder(in *lq.ReqCreateAlipayScanOrder, ch chan *
 	})
 }
 
-func (l *Lobby) CreateAlipayAppOrder(in *lq.ReqCreateAlipayAppOrder, ch chan *lq.ResCreateAlipayAppOrder) {
+func (l *LobbyClient) CreateAlipayAppOrder(in *lq.ReqCreateAlipayAppOrder, ch chan *lq.ResCreateAlipayAppOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createAlipayAppOrder", req, func(msg []byte) {
 		data := &lq.ResCreateAlipayAppOrder{}
@@ -1262,7 +1263,7 @@ func (l *Lobby) CreateAlipayAppOrder(in *lq.ReqCreateAlipayAppOrder, ch chan *lq
 	})
 }
 
-func (l *Lobby) CreateJPCreditCardOrder(in *lq.ReqCreateJPCreditCardOrder, ch chan *lq.ResCreateJPCreditCardOrder) {
+func (l *LobbyClient) CreateJPCreditCardOrder(in *lq.ReqCreateJPCreditCardOrder, ch chan *lq.ResCreateJPCreditCardOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createJPCreditCardOrder", req, func(msg []byte) {
 		data := &lq.ResCreateJPCreditCardOrder{}
@@ -1272,7 +1273,7 @@ func (l *Lobby) CreateJPCreditCardOrder(in *lq.ReqCreateJPCreditCardOrder, ch ch
 	})
 }
 
-func (l *Lobby) CreateJPPaypalOrder(in *lq.ReqCreateJPPaypalOrder, ch chan *lq.ResCreateJPPaypalOrder) {
+func (l *LobbyClient) CreateJPPaypalOrder(in *lq.ReqCreateJPPaypalOrder, ch chan *lq.ResCreateJPPaypalOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createJPPaypalOrder", req, func(msg []byte) {
 		data := &lq.ResCreateJPPaypalOrder{}
@@ -1282,7 +1283,7 @@ func (l *Lobby) CreateJPPaypalOrder(in *lq.ReqCreateJPPaypalOrder, ch chan *lq.R
 	})
 }
 
-func (l *Lobby) CreateJPAuOrder(in *lq.ReqCreateJPAuOrder, ch chan *lq.ResCreateJPAuOrder) {
+func (l *LobbyClient) CreateJPAuOrder(in *lq.ReqCreateJPAuOrder, ch chan *lq.ResCreateJPAuOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createJPAuOrder", req, func(msg []byte) {
 		data := &lq.ResCreateJPAuOrder{}
@@ -1292,7 +1293,7 @@ func (l *Lobby) CreateJPAuOrder(in *lq.ReqCreateJPAuOrder, ch chan *lq.ResCreate
 	})
 }
 
-func (l *Lobby) CreateJPDocomoOrder(in *lq.ReqCreateJPDocomoOrder, ch chan *lq.ResCreateJPDocomoOrder) {
+func (l *LobbyClient) CreateJPDocomoOrder(in *lq.ReqCreateJPDocomoOrder, ch chan *lq.ResCreateJPDocomoOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createJPDocomoOrder", req, func(msg []byte) {
 		data := &lq.ResCreateJPDocomoOrder{}
@@ -1302,7 +1303,7 @@ func (l *Lobby) CreateJPDocomoOrder(in *lq.ReqCreateJPDocomoOrder, ch chan *lq.R
 	})
 }
 
-func (l *Lobby) CreateJPWebMoneyOrder(in *lq.ReqCreateJPWebMoneyOrder, ch chan *lq.ResCreateJPWebMoneyOrder) {
+func (l *LobbyClient) CreateJPWebMoneyOrder(in *lq.ReqCreateJPWebMoneyOrder, ch chan *lq.ResCreateJPWebMoneyOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createJPWebMoneyOrder", req, func(msg []byte) {
 		data := &lq.ResCreateJPWebMoneyOrder{}
@@ -1312,7 +1313,7 @@ func (l *Lobby) CreateJPWebMoneyOrder(in *lq.ReqCreateJPWebMoneyOrder, ch chan *
 	})
 }
 
-func (l *Lobby) CreateJPSoftbankOrder(in *lq.ReqCreateJPSoftbankOrder, ch chan *lq.ResCreateJPSoftbankOrder) {
+func (l *LobbyClient) CreateJPSoftbankOrder(in *lq.ReqCreateJPSoftbankOrder, ch chan *lq.ResCreateJPSoftbankOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createJPSoftbankOrder", req, func(msg []byte) {
 		data := &lq.ResCreateJPSoftbankOrder{}
@@ -1322,7 +1323,7 @@ func (l *Lobby) CreateJPSoftbankOrder(in *lq.ReqCreateJPSoftbankOrder, ch chan *
 	})
 }
 
-func (l *Lobby) CreateENPaypalOrder(in *lq.ReqCreateENPaypalOrder, ch chan *lq.ResCreateENPaypalOrder) {
+func (l *LobbyClient) CreateENPaypalOrder(in *lq.ReqCreateENPaypalOrder, ch chan *lq.ResCreateENPaypalOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createENPaypalOrder", req, func(msg []byte) {
 		data := &lq.ResCreateENPaypalOrder{}
@@ -1332,7 +1333,7 @@ func (l *Lobby) CreateENPaypalOrder(in *lq.ReqCreateENPaypalOrder, ch chan *lq.R
 	})
 }
 
-func (l *Lobby) CreateENMasterCardOrder(in *lq.ReqCreateENMasterCardOrder, ch chan *lq.ResCreateENMasterCardOrder) {
+func (l *LobbyClient) CreateENMasterCardOrder(in *lq.ReqCreateENMasterCardOrder, ch chan *lq.ResCreateENMasterCardOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createENMasterCardOrder", req, func(msg []byte) {
 		data := &lq.ResCreateENMasterCardOrder{}
@@ -1342,7 +1343,7 @@ func (l *Lobby) CreateENMasterCardOrder(in *lq.ReqCreateENMasterCardOrder, ch ch
 	})
 }
 
-func (l *Lobby) CreateENVisaOrder(in *lq.ReqCreateENVisaOrder, ch chan *lq.ResCreateENVisaOrder) {
+func (l *LobbyClient) CreateENVisaOrder(in *lq.ReqCreateENVisaOrder, ch chan *lq.ResCreateENVisaOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createENVisaOrder", req, func(msg []byte) {
 		data := &lq.ResCreateENVisaOrder{}
@@ -1352,7 +1353,7 @@ func (l *Lobby) CreateENVisaOrder(in *lq.ReqCreateENVisaOrder, ch chan *lq.ResCr
 	})
 }
 
-func (l *Lobby) CreateENJCBOrder(in *lq.ReqCreateENJCBOrder, ch chan *lq.ResCreateENJCBOrder) {
+func (l *LobbyClient) CreateENJCBOrder(in *lq.ReqCreateENJCBOrder, ch chan *lq.ResCreateENJCBOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createENJCBOrder", req, func(msg []byte) {
 		data := &lq.ResCreateENJCBOrder{}
@@ -1362,7 +1363,7 @@ func (l *Lobby) CreateENJCBOrder(in *lq.ReqCreateENJCBOrder, ch chan *lq.ResCrea
 	})
 }
 
-func (l *Lobby) CreateENAlipayOrder(in *lq.ReqCreateENAlipayOrder, ch chan *lq.ResCreateENAlipayOrder) {
+func (l *LobbyClient) CreateENAlipayOrder(in *lq.ReqCreateENAlipayOrder, ch chan *lq.ResCreateENAlipayOrder) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("createENAlipayOrder", req, func(msg []byte) {
 		data := &lq.ResCreateENAlipayOrder{}
@@ -1372,7 +1373,7 @@ func (l *Lobby) CreateENAlipayOrder(in *lq.ReqCreateENAlipayOrder, ch chan *lq.R
 	})
 }
 
-func (l *Lobby) FetchMisc(ch chan *lq.ResMisc) {
+func (l *LobbyClient) FetchMisc(ch chan *lq.ResMisc) {
 	_ = l.sendRPC("fetchMisc", ReqCommon, func(msg []byte) {
 		data := &lq.ResMisc{}
 		_ = proto.Unmarshal(msg, data)
@@ -1381,7 +1382,7 @@ func (l *Lobby) FetchMisc(ch chan *lq.ResMisc) {
 	})
 }
 
-func (l *Lobby) ModifySignature(in *lq.ReqModifySignature, ch chan *lq.ResCommon) {
+func (l *LobbyClient) ModifySignature(in *lq.ReqModifySignature, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("modifySignature", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1391,7 +1392,7 @@ func (l *Lobby) ModifySignature(in *lq.ReqModifySignature, ch chan *lq.ResCommon
 	})
 }
 
-func (l *Lobby) FetchIDCardInfo(ch chan *lq.ResIDCardInfo) {
+func (l *LobbyClient) FetchIDCardInfo(ch chan *lq.ResIDCardInfo) {
 	_ = l.sendRPC("fetchIDCardInfo", ReqCommon, func(msg []byte) {
 		data := &lq.ResIDCardInfo{}
 		_ = proto.Unmarshal(msg, data)
@@ -1400,7 +1401,7 @@ func (l *Lobby) FetchIDCardInfo(ch chan *lq.ResIDCardInfo) {
 	})
 }
 
-func (l *Lobby) UpdateIDCardInfo(in *lq.ReqUpdateIDCardInfo, ch chan *lq.ResCommon) {
+func (l *LobbyClient) UpdateIDCardInfo(in *lq.ReqUpdateIDCardInfo, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("updateIDCardInfo", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1410,7 +1411,7 @@ func (l *Lobby) UpdateIDCardInfo(in *lq.ReqUpdateIDCardInfo, ch chan *lq.ResComm
 	})
 }
 
-func (l *Lobby) FetchVipReward(ch chan *lq.ResVipReward) {
+func (l *LobbyClient) FetchVipReward(ch chan *lq.ResVipReward) {
 	_ = l.sendRPC("fetchVipReward", ReqCommon, func(msg []byte) {
 		data := &lq.ResVipReward{}
 		_ = proto.Unmarshal(msg, data)
@@ -1419,7 +1420,7 @@ func (l *Lobby) FetchVipReward(ch chan *lq.ResVipReward) {
 	})
 }
 
-func (l *Lobby) GainVipReward(in *lq.ReqGainVipReward, ch chan *lq.ResCommon) {
+func (l *LobbyClient) GainVipReward(in *lq.ReqGainVipReward, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("gainVipReward", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1429,7 +1430,7 @@ func (l *Lobby) GainVipReward(in *lq.ReqGainVipReward, ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) FetchCustomizedContestList(in *lq.ReqFetchCustomizedContestList, ch chan *lq.ResFetchCustomizedContestList) {
+func (l *LobbyClient) FetchCustomizedContestList(in *lq.ReqFetchCustomizedContestList, ch chan *lq.ResFetchCustomizedContestList) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchCustomizedContestList", req, func(msg []byte) {
 		data := &lq.ResFetchCustomizedContestList{}
@@ -1439,7 +1440,7 @@ func (l *Lobby) FetchCustomizedContestList(in *lq.ReqFetchCustomizedContestList,
 	})
 }
 
-func (l *Lobby) FetchCustomizedContestExtendInfo(in *lq.ReqFetchCustomizedContestExtendInfo, ch chan *lq.ResFetchCustomizedContestExtendInfo) {
+func (l *LobbyClient) FetchCustomizedContestExtendInfo(in *lq.ReqFetchCustomizedContestExtendInfo, ch chan *lq.ResFetchCustomizedContestExtendInfo) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchCustomizedContestExtendInfo", req, func(msg []byte) {
 		data := &lq.ResFetchCustomizedContestExtendInfo{}
@@ -1449,7 +1450,7 @@ func (l *Lobby) FetchCustomizedContestExtendInfo(in *lq.ReqFetchCustomizedContes
 	})
 }
 
-func (l *Lobby) EnterCustomizedContest(in *lq.ReqEnterCustomizedContest, ch chan *lq.ResEnterCustomizedContest) {
+func (l *LobbyClient) EnterCustomizedContest(in *lq.ReqEnterCustomizedContest, ch chan *lq.ResEnterCustomizedContest) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("enterCustomizedContest", req, func(msg []byte) {
 		data := &lq.ResEnterCustomizedContest{}
@@ -1459,7 +1460,7 @@ func (l *Lobby) EnterCustomizedContest(in *lq.ReqEnterCustomizedContest, ch chan
 	})
 }
 
-func (l *Lobby) LeaveCustomizedContest(ch chan *lq.ResCommon) {
+func (l *LobbyClient) LeaveCustomizedContest(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("leaveCustomizedContest", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)
@@ -1468,7 +1469,7 @@ func (l *Lobby) LeaveCustomizedContest(ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) FetchCustomizedContestOnlineInfo(in *lq.ReqFetchCustomizedContestOnlineInfo, ch chan *lq.ResFetchCustomizedContestOnlineInfo) {
+func (l *LobbyClient) FetchCustomizedContestOnlineInfo(in *lq.ReqFetchCustomizedContestOnlineInfo, ch chan *lq.ResFetchCustomizedContestOnlineInfo) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchCustomizedContestOnlineInfo", req, func(msg []byte) {
 		data := &lq.ResFetchCustomizedContestOnlineInfo{}
@@ -1478,7 +1479,7 @@ func (l *Lobby) FetchCustomizedContestOnlineInfo(in *lq.ReqFetchCustomizedContes
 	})
 }
 
-func (l *Lobby) FetchCustomizedContestByContestId(in *lq.ReqFetchCustomizedContestByContestId, ch chan *lq.ResFetchCustomizedContestByContestId) {
+func (l *LobbyClient) FetchCustomizedContestByContestId(in *lq.ReqFetchCustomizedContestByContestId, ch chan *lq.ResFetchCustomizedContestByContestId) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchCustomizedContestByContestId", req, func(msg []byte) {
 		data := &lq.ResFetchCustomizedContestByContestId{}
@@ -1488,7 +1489,7 @@ func (l *Lobby) FetchCustomizedContestByContestId(in *lq.ReqFetchCustomizedConte
 	})
 }
 
-func (l *Lobby) StartCustomizedContest(in *lq.ReqStartCustomizedContest, ch chan *lq.ResCommon) {
+func (l *LobbyClient) StartCustomizedContest(in *lq.ReqStartCustomizedContest, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("startCustomizedContest", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1498,7 +1499,7 @@ func (l *Lobby) StartCustomizedContest(in *lq.ReqStartCustomizedContest, ch chan
 	})
 }
 
-func (l *Lobby) StopCustomizedContest(ch chan *lq.ResCommon) {
+func (l *LobbyClient) StopCustomizedContest(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("stopCustomizedContest", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)
@@ -1507,7 +1508,7 @@ func (l *Lobby) StopCustomizedContest(ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) JoinCustomizedContestChatRoom(in *lq.ReqJoinCustomizedContestChatRoom, ch chan *lq.ResJoinCustomizedContestChatRoom) {
+func (l *LobbyClient) JoinCustomizedContestChatRoom(in *lq.ReqJoinCustomizedContestChatRoom, ch chan *lq.ResJoinCustomizedContestChatRoom) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("joinCustomizedContestChatRoom", req, func(msg []byte) {
 		data := &lq.ResJoinCustomizedContestChatRoom{}
@@ -1517,7 +1518,7 @@ func (l *Lobby) JoinCustomizedContestChatRoom(in *lq.ReqJoinCustomizedContestCha
 	})
 }
 
-func (l *Lobby) LeaveCustomizedContestChatRoom(ch chan *lq.ResCommon) {
+func (l *LobbyClient) LeaveCustomizedContestChatRoom(ch chan *lq.ResCommon) {
 	_ = l.sendRPC("leaveCustomizedContestChatRoom", ReqCommon, func(msg []byte) {
 		data := &lq.ResCommon{}
 		_ = proto.Unmarshal(msg, data)
@@ -1526,7 +1527,7 @@ func (l *Lobby) LeaveCustomizedContestChatRoom(ch chan *lq.ResCommon) {
 	})
 }
 
-func (l *Lobby) SayChatMessage(in *lq.ReqSayChatMessage, ch chan *lq.ResCommon) {
+func (l *LobbyClient) SayChatMessage(in *lq.ReqSayChatMessage, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("sayChatMessage", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1536,7 +1537,7 @@ func (l *Lobby) SayChatMessage(in *lq.ReqSayChatMessage, ch chan *lq.ResCommon) 
 	})
 }
 
-func (l *Lobby) FetchCustomizedContestGameRecords(in *lq.ReqFetchCustomizedContestGameRecords, ch chan *lq.ResFetchCustomizedContestGameRecords) {
+func (l *LobbyClient) FetchCustomizedContestGameRecords(in *lq.ReqFetchCustomizedContestGameRecords, ch chan *lq.ResFetchCustomizedContestGameRecords) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchCustomizedContestGameRecords", req, func(msg []byte) {
 		data := &lq.ResFetchCustomizedContestGameRecords{}
@@ -1546,7 +1547,7 @@ func (l *Lobby) FetchCustomizedContestGameRecords(in *lq.ReqFetchCustomizedConte
 	})
 }
 
-func (l *Lobby) FetchCustomizedContestGameLiveList(in *lq.ReqFetchCustomizedContestGameLiveList, ch chan *lq.ResFetchCustomizedContestGameLiveList) {
+func (l *LobbyClient) FetchCustomizedContestGameLiveList(in *lq.ReqFetchCustomizedContestGameLiveList, ch chan *lq.ResFetchCustomizedContestGameLiveList) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchCustomizedContestGameLiveList", req, func(msg []byte) {
 		data := &lq.ResFetchCustomizedContestGameLiveList{}
@@ -1556,7 +1557,7 @@ func (l *Lobby) FetchCustomizedContestGameLiveList(in *lq.ReqFetchCustomizedCont
 	})
 }
 
-func (l *Lobby) FollowCustomizedContest(in *lq.ReqTargetCustomizedContest, ch chan *lq.ResCommon) {
+func (l *LobbyClient) FollowCustomizedContest(in *lq.ReqTargetCustomizedContest, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("followCustomizedContest", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1566,7 +1567,7 @@ func (l *Lobby) FollowCustomizedContest(in *lq.ReqTargetCustomizedContest, ch ch
 	})
 }
 
-func (l *Lobby) UnfollowCustomizedContest(in *lq.ReqTargetCustomizedContest, ch chan *lq.ResCommon) {
+func (l *LobbyClient) UnfollowCustomizedContest(in *lq.ReqTargetCustomizedContest, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("unfollowCustomizedContest", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1576,7 +1577,7 @@ func (l *Lobby) UnfollowCustomizedContest(in *lq.ReqTargetCustomizedContest, ch 
 	})
 }
 
-func (l *Lobby) FetchActivityList(ch chan *lq.ResActivityList) {
+func (l *LobbyClient) FetchActivityList(ch chan *lq.ResActivityList) {
 	_ = l.sendRPC("fetchActivityList", ReqCommon, func(msg []byte) {
 		data := &lq.ResActivityList{}
 		_ = proto.Unmarshal(msg, data)
@@ -1585,7 +1586,7 @@ func (l *Lobby) FetchActivityList(ch chan *lq.ResActivityList) {
 	})
 }
 
-func (l *Lobby) FetchAccountActivityData(ch chan *lq.ResAccountActivityData) {
+func (l *LobbyClient) FetchAccountActivityData(ch chan *lq.ResAccountActivityData) {
 	_ = l.sendRPC("fetchAccountActivityData", ReqCommon, func(msg []byte) {
 		data := &lq.ResAccountActivityData{}
 		_ = proto.Unmarshal(msg, data)
@@ -1594,7 +1595,7 @@ func (l *Lobby) FetchAccountActivityData(ch chan *lq.ResAccountActivityData) {
 	})
 }
 
-func (l *Lobby) ExchangeActivityItem(in *lq.ReqExchangeActivityItem, ch chan *lq.ResExchangeActivityItem) {
+func (l *LobbyClient) ExchangeActivityItem(in *lq.ReqExchangeActivityItem, ch chan *lq.ResExchangeActivityItem) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("exchangeActivityItem", req, func(msg []byte) {
 		data := &lq.ResExchangeActivityItem{}
@@ -1604,7 +1605,7 @@ func (l *Lobby) ExchangeActivityItem(in *lq.ReqExchangeActivityItem, ch chan *lq
 	})
 }
 
-func (l *Lobby) CompleteActivityTask(in *lq.ReqCompleteActivityTask, ch chan *lq.ResCommon) {
+func (l *LobbyClient) CompleteActivityTask(in *lq.ReqCompleteActivityTask, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("completeActivityTask", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1614,7 +1615,7 @@ func (l *Lobby) CompleteActivityTask(in *lq.ReqCompleteActivityTask, ch chan *lq
 	})
 }
 
-func (l *Lobby) CompleteActivityFlipTask(in *lq.ReqCompleteActivityTask, ch chan *lq.ResCommon) {
+func (l *LobbyClient) CompleteActivityFlipTask(in *lq.ReqCompleteActivityTask, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("completeActivityFlipTask", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1624,7 +1625,7 @@ func (l *Lobby) CompleteActivityFlipTask(in *lq.ReqCompleteActivityTask, ch chan
 	})
 }
 
-func (l *Lobby) RecieveActivityFlipTask(in *lq.ReqRecieveActivityFlipTask, ch chan *lq.ResRecieveActivityFlipTask) {
+func (l *LobbyClient) RecieveActivityFlipTask(in *lq.ReqRecieveActivityFlipTask, ch chan *lq.ResRecieveActivityFlipTask) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("recieveActivityFlipTask", req, func(msg []byte) {
 		data := &lq.ResRecieveActivityFlipTask{}
@@ -1634,7 +1635,7 @@ func (l *Lobby) RecieveActivityFlipTask(in *lq.ReqRecieveActivityFlipTask, ch ch
 	})
 }
 
-func (l *Lobby) FetchActivityFlipInfo(in *lq.ReqFetchActivityFlipInfo, ch chan *lq.ResFetchActivityFlipInfo) {
+func (l *LobbyClient) FetchActivityFlipInfo(in *lq.ReqFetchActivityFlipInfo, ch chan *lq.ResFetchActivityFlipInfo) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchActivityFlipInfo", req, func(msg []byte) {
 		data := &lq.ResFetchActivityFlipInfo{}
@@ -1644,7 +1645,7 @@ func (l *Lobby) FetchActivityFlipInfo(in *lq.ReqFetchActivityFlipInfo, ch chan *
 	})
 }
 
-func (l *Lobby) GainAccumulatedPointActivityReward(in *lq.ReqGainAccumulatedPointActivityReward, ch chan *lq.ResCommon) {
+func (l *LobbyClient) GainAccumulatedPointActivityReward(in *lq.ReqGainAccumulatedPointActivityReward, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("gainAccumulatedPointActivityReward", req, func(msg []byte) {
 		data := &lq.ResCommon{}
@@ -1654,7 +1655,7 @@ func (l *Lobby) GainAccumulatedPointActivityReward(in *lq.ReqGainAccumulatedPoin
 	})
 }
 
-func (l *Lobby) FetchRankPointLeaderboard(in *lq.ReqFetchRankPointLeaderboard, ch chan *lq.ResFetchRankPointLeaderboard) {
+func (l *LobbyClient) FetchRankPointLeaderboard(in *lq.ReqFetchRankPointLeaderboard, ch chan *lq.ResFetchRankPointLeaderboard) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("fetchRankPointLeaderboard", req, func(msg []byte) {
 		data := &lq.ResFetchRankPointLeaderboard{}
@@ -1664,7 +1665,7 @@ func (l *Lobby) FetchRankPointLeaderboard(in *lq.ReqFetchRankPointLeaderboard, c
 	})
 }
 
-func (l *Lobby) GainRankPointReward(in *lq.ReqGainRankPointReward, ch chan *lq.ResCommon) {
+func (l *LobbyClient) GainRankPointReward(in *lq.ReqGainRankPointReward, ch chan *lq.ResCommon) {
 	req, _ := proto.Marshal(in)
 	_ = l.sendRPC("gainRankPointReward", req, func(msg []byte) {
 		data := &lq.ResCommon{}

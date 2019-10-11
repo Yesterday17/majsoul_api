@@ -16,7 +16,7 @@ const (
 	MaxSocketIndex = 60006
 )
 
-type socket struct {
+type socketClient struct {
 	dialer *websocket.Dialer
 	conn   *websocket.Conn
 
@@ -25,19 +25,19 @@ type socket struct {
 	handlers []func(msg []byte)
 }
 
-func (s *socket) init(service string) (err error) {
+func (s *socketClient) init(service string, url string) (err error) {
 	s.service = ".lq." + service
 	s.index = 0
 	s.dialer = &websocket.Dialer{
 		Proxy:            http.ProxyFromEnvironment,
 		HandshakeTimeout: 45 * time.Second,
 	}
-	s.conn, _, err = s.dialer.Dial("wss://mj-srv-5.majsoul.com:4101", http.Header{})
+	s.conn, _, err = s.dialer.Dial(url, http.Header{})
 	s.handlers = make([]func(msg []byte), MaxSocketIndex)
 	return
 }
 
-func (s *socket) Listen() {
+func (s *socketClient) Listen() {
 	for {
 		_, p, err := s.conn.ReadMessage()
 		if err != nil {
@@ -63,7 +63,7 @@ func (s *socket) Listen() {
 	}
 }
 
-func (s *socket) sendRPC(method string, packet []byte, handler func(msg []byte)) error {
+func (s *socketClient) sendRPC(method string, packet []byte, handler func(msg []byte)) error {
 	s.index = (s.index + 1) % MaxSocketIndex
 
 	buffer := &bytes.Buffer{}
@@ -74,12 +74,12 @@ func (s *socket) sendRPC(method string, packet []byte, handler func(msg []byte))
 	return s.conn.WriteMessage(websocket.BinaryMessage, buffer.Bytes())
 }
 
-func (s *socket) encodeHeader(bw *bytes.Buffer, t byte) {
+func (s *socketClient) encodeHeader(bw *bytes.Buffer, t byte) {
 	bw.WriteByte(t)
 	bw.WriteByte(byte(255 & s.index))
 	bw.WriteByte(byte(s.index >> 8))
 }
 
-func (s *socket) encodePacket(bw *bytes.Buffer, method string, packet []byte) {
+func (s *socketClient) encodePacket(bw *bytes.Buffer, method string, packet []byte) {
 	bw.Write(wrap(s.service+"."+method, packet))
 }

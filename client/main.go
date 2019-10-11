@@ -6,12 +6,13 @@ import (
 	"github.com/Yesterday17/majsoul_api/lq"
 )
 
-func main() {
-	lobby := &api.Lobby{}
-	game := &api.Game{}
+const (
+	MajsoulServer = "wss://mj-srv-5.majsoul.com:4101"
+)
 
-	_ = lobby.Init()
-	_ = game.Init()
+func main() {
+	lobby, _ := api.NewLobbyClient(MajsoulServer)
+	game, _ := api.NewGameClient(MajsoulServer)
 
 	go lobby.Listen()
 
@@ -28,4 +29,6 @@ func main() {
 		info := <-ch
 		fmt.Println(info.ServerTime)
 	})()
+
+	_ = game
 }
