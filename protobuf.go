@@ -5,7 +5,7 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
-var ReqCommon, _ = proto.Marshal(&lq.ReqCommon{})
+var reqCommon, _ = proto.Marshal(&lq.ReqCommon{})
 
 func wrap(name string, msg []byte) (ret []byte) {
 	ret, _ = proto.Marshal(&lq.Wrapper{

@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	SocketNull     = 0
-	SocketNotify   = 1
-	SocketRequest  = 2
-	SocketResponse = 3
-	MaxSocketIndex = 60006
+	socketNull     = 0
+	socketNotify   = 1
+	socketRequest  = 2
+	socketResponse = 3
+	maxSocketIndex = 60006
 )
 
 type socketClient struct {
@@ -28,7 +28,7 @@ func (s *socketClient) init(service string, url string) (err error) {
 	s.index = 0
 
 	s.conn, _, err = websocket.Dial(context.Background(), url, nil)
-	s.handlers = make([]func(msg []byte), MaxSocketIndex)
+	s.handlers = make([]func(msg []byte), maxSocketIndex)
 	return
 }
 
@@ -44,13 +44,13 @@ func (s *socketClient) Listen() {
 
 		var respType = p[0]
 		switch respType {
-		case SocketNull, SocketRequest:
+		case socketNull, socketRequest:
 			// TODO: error
-		case SocketNotify:
+		case socketNotify:
 			fmt.Println("NOTIFY NOT IMPLEMENTED!")
 			p = p[1:]
 			// TODO: handle notify
-		case SocketResponse:
+		case socketResponse:
 			p = p[3:]
 			s.handlers[index](unWrap(p))
 			s.handlers[index] = nil
@@ -59,10 +59,10 @@ func (s *socketClient) Listen() {
 }
 
 func (s *socketClient) sendRPC(method string, packet []byte, handler func(msg []byte)) error {
-	s.index = (s.index + 1) % MaxSocketIndex
+	s.index = (s.index + 1) % maxSocketIndex
 
 	buffer := &bytes.Buffer{}
-	s.encodeHeader(buffer, SocketRequest)
+	s.encodeHeader(buffer, socketRequest)
 	s.encodePacket(buffer, method, packet)
 
 	s.handlers[s.index] = handler
