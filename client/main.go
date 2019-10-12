@@ -123,4 +123,5 @@ func main() {
 	}
 
 	_ = game
+	select {}
 }

@@ -65,12 +65,13 @@ func (s *socketClient) Listen() {
 
 // TODO: make it private
 func (s *socketClient) AddListener(method string, listener func(wrapper lq.Wrapper)) {
-	arr, ok := s.listeners[".lq."+method]
+	lqMethod := ".lq." + method
+	arr, ok := s.listeners[lqMethod]
 	if !ok {
-		s.listeners[".lq."+method] = make([]func(wrapper lq.Wrapper), 8)
-		arr = s.listeners[method]
+		s.listeners[lqMethod] = make([]func(wrapper lq.Wrapper), 0)
+		arr = s.listeners[lqMethod]
 	}
-	s.listeners[method] = append(arr, listener)
+	s.listeners[lqMethod] = append(arr, listener)
 }
 
 func (s *socketClient) sendRPC(method string, packet []byte, handler func(msg []byte)) error {
