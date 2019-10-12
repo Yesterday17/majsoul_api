@@ -15,8 +15,7 @@ func wrap(name string, msg []byte) (ret []byte) {
 	return
 }
 
-func unWrap(p []byte) []byte {
-	msg := &lq.Wrapper{}
-	_ = proto.Unmarshal(p, msg)
-	return msg.Data
+func unWrap(p []byte) (msg lq.Wrapper) {
+	_ = proto.Unmarshal(p, &msg)
+	return
 }

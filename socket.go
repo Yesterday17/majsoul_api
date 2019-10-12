@@ -3,7 +3,8 @@ package majsoul_api
 import (
 	"bytes"
 	"context"
-	"fmt"
+	"github.com/Yesterday17/majsoul_api/lq"
+	"log"
 	"nhooyr.io/websocket"
 )
 
@@ -18,9 +19,10 @@ const (
 type socketClient struct {
 	conn *websocket.Conn
 
-	service  string
-	index    uint16
-	handlers []func(msg []byte)
+	service   string
+	index     uint16
+	handlers  []func(msg []byte)
+	listeners map[string][]func(wrapper lq.Wrapper)
 }
 
 func (s *socketClient) init(service string, url string) (err error) {
@@ -29,6 +31,7 @@ func (s *socketClient) init(service string, url string) (err error) {
 
 	s.conn, _, err = websocket.Dial(context.Background(), url, nil)
 	s.handlers = make([]func(msg []byte), maxSocketIndex)
+	s.listeners = make(map[string][]func(wrapper lq.Wrapper))
 	return
 }
 
@@ -45,17 +48,29 @@ func (s *socketClient) Listen() {
 		var respType = p[0]
 		switch respType {
 		case socketNull, socketRequest:
-			// TODO: error
+			log.Fatalf("Unexpected socket type: %d", respType)
 		case socketNotify:
-			fmt.Println("NOTIFY NOT IMPLEMENTED!")
 			p = p[1:]
-			// TODO: handle notify
+			data := unWrap(p)
+			for _, listener := range s.listeners[data.Name] {
+				listener(data)
+			}
 		case socketResponse:
 			p = p[3:]
-			s.handlers[index](unWrap(p))
+			s.handlers[index](unWrap(p).Data)
 			s.handlers[index] = nil
 		}
 	}
+}
+
+// TODO: make it private
+func (s *socketClient) AddListener(method string, listener func(wrapper lq.Wrapper)) {
+	arr, ok := s.listeners[".lq."+method]
+	if !ok {
+		s.listeners[".lq."+method] = make([]func(wrapper lq.Wrapper), 8)
+		arr = s.listeners[method]
+	}
+	s.listeners[method] = append(arr, listener)
 }
 
 func (s *socketClient) sendRPC(method string, packet []byte, handler func(msg []byte)) error {
