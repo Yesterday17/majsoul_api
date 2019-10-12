@@ -189,7 +189,7 @@ func (l *lobbyClient) Logout(in *lq.ReqLogout) chan lq.ResLogout {
 	return future
 }
 
-func (l *lobbyClient) Heatbeat(in *lq.ReqHeatBeat) chan lq.ResCommon {
+func (l *lobbyClient) Heartbeat(in *lq.ReqHeatBeat) chan lq.ResCommon {
 	req, _ := proto.Marshal(in)
 	future := make(chan lq.ResCommon)
 	_ = l.sendRPC("heatbeat", req, func(msg []byte) {

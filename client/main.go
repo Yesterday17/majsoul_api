@@ -9,7 +9,6 @@ import (
 
 const (
 	MajsoulServer   = "wss://mj-srv-5.majsoul.com:4101"
-	DeviceId        = "83b5dacd-185f-40ee-b08d-c4c41735ae74"
 	ResourceVersion = "0.6.73.w"
 )
 
@@ -21,9 +20,8 @@ func main() {
 
 	// Login
 	login := <-lobby.Login(&lq.ReqLogin{
-		Account: "jaymen.matthews@thtt.us",
-		// jaymen.matthews@thtt
-		Password:  "2b1b11ac1556808a8c235df36457b05f852e3cb3eee84306819e1679888323c9",
+		Account:   "jaymen.matthews@thtt.us",
+		Password:  api.EncodePassword("jaymen.matthews@thtt"),
 		Reconnect: false,
 		Device: &lq.ClientDeviceInfo{
 			DeviceType: "pc",
@@ -31,7 +29,7 @@ func main() {
 			OsVersion:  "",
 			Browser:    "firefox",
 		},
-		RandomKey:      DeviceId,
+		RandomKey:      api.GenerateDeviceId(),
 		ClientVersion:  ResourceVersion,
 		GenAccessToken: true,
 		CurrencyPlatforms: []uint32{
@@ -80,7 +78,7 @@ func main() {
 	go func() {
 		time.AfterFunc(time.Minute*6, func() {
 			// if game.LobbyNetMgr.Inst.isOK
-			lobby.Heatbeat(&lq.ReqHeatBeat{
+			lobby.Heartbeat(&lq.ReqHeatBeat{
 				NoOperationCounter: uint32(time.Now().Second() - lastHeartBeatTime),
 			})
 		})
@@ -91,7 +89,7 @@ func main() {
 		time.AfterFunc(time.Second, func() {
 			if time.Now().Second()-lastHeartBeatTime > 2400 {
 				// if game.LobbyNetMgr.Inst.isOK
-				lobby.Heatbeat(&lq.ReqHeatBeat{
+				lobby.Heartbeat(&lq.ReqHeatBeat{
 					NoOperationCounter: 0,
 				})
 				lastHeartBeatTime = time.Now().Second()
@@ -121,6 +119,12 @@ func main() {
 	for _, p := range record.Head.Result.Players {
 		fmt.Printf("玩家:%s 位置:%d 点数:%d\n", players[p.Seat], p.Seat, p.TotalPoint)
 	}
+
+	i := <-lobby.FetchAccountInfo(&lq.ReqAccountInfo{AccountId: 114514})
+	fmt.Println(i.Room)
+
+	si := <-lobby.FetchAccountStatisticInfo(&lq.ReqAccountStatisticInfo{AccountId: 114514})
+	fmt.Printf("%+v", si)
 
 	_ = game
 	select {}
