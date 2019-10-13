@@ -9,9 +9,14 @@ type lobbyClient struct {
 	socketClient
 }
 
-func NewLobbyClient(base, url string) (*lobbyClient, error) {
-	client := &lobbyClient{}
-	return client, client.init(base, "Lobby", url)
+// LobbyClient Create a new lobby client
+// A lobby client handles most non-game performances
+func (a *MajsoulAPI) LobbyClient() (*lobbyClient, error) {
+	if a.lobbyClient == nil {
+		a.lobbyClient = &lobbyClient{}
+		return a.lobbyClient, a.lobbyClient.init("Lobby", a.GetWebSocketUrl())
+	}
+	return a.lobbyClient, nil
 }
 
 func (l *lobbyClient) FetchConnectionInfo() chan lq.ResConnectionInfo {

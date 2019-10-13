@@ -5,16 +5,6 @@ import (
 	"net/http"
 )
 
-const (
-	ApiVersion          = "0.6.58.w"
-	LatestTestedVersion = "0.6.73.w"
-)
-
-var (
-	ignoreVersionCheck     = false
-	panicOnVersionMismatch = true
-)
-
 type majsoulVersion struct {
 	Code    string `json:"code"`
 	Version string `json:"version"`
@@ -28,21 +18,26 @@ type prefixVersion struct {
 	Prefix string `json:"prefix"`
 }
 
-func IgnoreVersionCheck(ignore bool) {
-	ignoreVersionCheck = ignore
+// IgnoreVersionCheck Ignore version check when creating socket clients.
+func (a *MajsoulAPI) IgnoreVersionCheck(ignore bool) {
+	a.ignoreVersionCheck = ignore
 }
 
-func PanicOnVersionMismatch(panic bool) {
-	panicOnVersionMismatch = panic
+// PanicOnVersionMismatch When ignoreVersionCheck is false, this controls whether panic(version_mismatch) works,
+// or just print out the warning information
+func (a *MajsoulAPI) PanicOnVersionMismatch(panic bool) {
+	a.panicOnVersionMismatch = panic
 }
 
-func GetResourceVersion(base string) string {
-	version, _ := getVersion(base)
+// GetResourceVersion Get resource version now
+func (a *MajsoulAPI) GetResourceVersion() string {
+	version, _ := getVersion(a.Base)
 	return version.Version
 }
 
-func GetCodeVersion(base string) string {
-	version, _ := getVersion(base)
+// GetCodeVersion Get code.js version now
+func (a *MajsoulAPI) GetCodeVersion() string {
+	version, _ := getVersion(a.Base)
 	return version.Code
 }
 
@@ -78,30 +73,56 @@ func getResVersion(base, version string) (prefix map[string]prefixVersion, err e
 		return
 	}
 
-	resv := resVersion{}
-	err = json.Unmarshal([]byte(data), &resv)
+	res := resVersion{}
+	err = json.Unmarshal([]byte(data), &res)
 	if err != nil {
 		return
 	}
 
-	prefix = resv.Res
+	prefix = res.Res
 	return
 }
 
-func IsLatest(base string) (bool, string) {
-	version, err := getVersion(base)
+func (a *MajsoulAPI) refreshResVersion() error {
+	version, err := getVersion(a.Base)
 	if err != nil {
 		panic(err)
+	}
+
+	prefix, err := getResVersion(a.Base, version.Version)
+	if err != nil {
+		return err
+	}
+
+	a.resourceVersion = &prefix
+	return nil
+}
+
+func (a *MajsoulAPI) getCachedResVersion() error {
+	if a.resourceVersion == nil {
+		return a.refreshResVersion()
+	}
+	return nil
+}
+
+// IsLatest Determine whether it's the latest lobby version
+// returns a boolean and a detailed version string
+func (a *MajsoulAPI) IsLatest() (bool, string, error) {
+	version, err := getVersion(a.Base)
+	if err != nil {
+		return false, ApiVersion, err
 	}
 
 	if version.Version == LatestTestedVersion {
-		return true, ApiVersion
+		return true, ApiVersion, nil
 	}
 
-	prefix, err := getResVersion(base, version.Version)
+	err = a.getCachedResVersion()
 	if err != nil {
-		panic(err)
+		return false, version.Version, err
 	}
 
-	return prefix["res/proto/liqi.json"].Prefix == "v"+ApiVersion, prefix["res/proto/liqi.json"].Prefix
+	return (*a.resourceVersion)["res/proto/liqi.json"].Prefix == "v"+ApiVersion,
+		(*a.resourceVersion)["res/proto/liqi.json"].Prefix,
+		nil
 }

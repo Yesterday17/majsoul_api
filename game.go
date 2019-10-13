@@ -9,9 +9,14 @@ type gameClient struct {
 	socketClient
 }
 
-func NewGameClient(base, url string) (*gameClient, error) {
-	client := &gameClient{}
-	return client, client.init(base, "FastTest", url)
+// GameClient Create a new game(FastTest) client
+// A game client handles most in-game performances
+func (a *MajsoulAPI) GameClient() (*gameClient, error) {
+	if a.lobbyClient == nil {
+		a.lobbyClient = &lobbyClient{}
+		return a.gameClient, a.gameClient.init("FastTest", a.GetWebSocketUrl())
+	}
+	return a.gameClient, nil
 }
 
 func (l *gameClient) AuthGame(in *lq.ReqAuthGame) chan lq.ResAuthGame {

@@ -1,33 +1,38 @@
-package main
+package majsoul_api
 
 import (
 	"fmt"
-	api "github.com/Yesterday17/majsoul_api"
 	"github.com/Yesterday17/majsoul_api/lq"
 	"time"
 )
 
-const (
-	MajsoulBase   = "www.majsoul.com/1"
-	MajsoulApi    = "api.majsoul.com:2501"
-	MajsoulServer = "wss://mj-srv-5.majsoul.com:4101"
-)
-
-func main() {
-	err := api.SendRegisterCode(MajsoulApi, "t@ab.cd")
+func Example() {
+	api, err := NewMajsoulAPI(MajsoulCN)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	isLatest, latest := api.IsLatest(MajsoulBase)
+	err = api.SendRegisterCode("t@ab.ef")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	isLatest, latest, err := api.IsLatest()
 	fmt.Println("isLatest", isLatest, latest)
-	fmt.Println("resourceVersion", api.GetResourceVersion(MajsoulBase))
-	fmt.Println("codeVersion", api.GetCodeVersion(MajsoulBase))
+	fmt.Println("resourceVersion", api.GetResourceVersion())
+	fmt.Println("codeVersion", api.GetCodeVersion())
 
 	//api.IgnoreVersionCheck(true)
 	//api.PanicOnVersionMismatch(false)
-	lobby, _ := api.NewLobbyClient(MajsoulBase, MajsoulServer)
-	game, _ := api.NewGameClient(MajsoulBase, MajsoulServer)
+	lobby, err := api.LobbyClient()
+	if err != nil {
+		panic(err)
+	}
+
+	game, err := api.GameClient()
+	if err != nil {
+		panic(err)
+	}
 
 	go lobby.Listen()
 
@@ -43,7 +48,7 @@ func main() {
 			Browser:    "firefox",
 		},
 		RandomKey:      api.GenerateDeviceId(),
-		ClientVersion:  api.GetResourceVersion(MajsoulBase),
+		ClientVersion:  api.GetResourceVersion(),
 		GenAccessToken: true,
 		CurrencyPlatforms: []uint32{
 			// 1, // Google Play
@@ -141,4 +146,14 @@ func main() {
 
 	_ = game
 	select {}
+}
+
+func ExampleNewMajsoulAPI() {
+	api, err := NewMajsoulAPI(MajsoulJP)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// More operations here...
+	_ = api
 }

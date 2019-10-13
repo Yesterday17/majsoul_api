@@ -25,25 +25,7 @@ type socketClient struct {
 	listeners map[string][]func(wrapper lq.Wrapper)
 }
 
-func (s *socketClient) init(base, service, url string) (err error) {
-	if !ignoreVersionCheck {
-		isLatest, latest := IsLatest(base)
-		if !isLatest {
-			notLatest := fmt.Sprintf(
-				"You're not using the latest majsoul api!\n"+
-					"Now using: %s, Latest: %s\n"+
-					"Please upgrade this package.",
-				ApiVersion,
-				latest,
-			)
-			if panicOnVersionMismatch {
-				panic(notLatest)
-			} else {
-				fmt.Println(notLatest)
-			}
-		}
-	}
-
+func (s *socketClient) init(service, url string) (err error) {
 	s.service = ".lq." + service
 	s.index = 0
 
@@ -53,6 +35,7 @@ func (s *socketClient) init(base, service, url string) (err error) {
 	return
 }
 
+// Start listening on majsoul websocket server
 func (s *socketClient) Listen() {
 	for {
 		_, p, err := s.conn.Read(context.Background())
@@ -81,7 +64,8 @@ func (s *socketClient) Listen() {
 	}
 }
 
-// TODO: make it private
+// Add a notify listener to listen notifies
+// Read code of majsoul to get detailed usages
 func (s *socketClient) AddListener(method string, listener func(wrapper lq.Wrapper)) {
 	lqMethod := ".lq." + method
 	arr, ok := s.listeners[lqMethod]

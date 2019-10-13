@@ -11,23 +11,22 @@ import (
 	"strings"
 )
 
-const (
-	majsoulSecret = "lailai"
-)
-
-func EncodePassword(password string) string {
-	h := hmac.New(sha256.New, []byte(majsoulSecret))
+// EncodePassword Hash your clear password using the way majsoul uses
+func (a *MajsoulAPI) EncodePassword(password string) string {
+	h := hmac.New(sha256.New, []byte(a.Secret))
 	h.Write([]byte(password))
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-func GenerateDeviceId() string {
+// GenerateDeviceId Generate a uuid which majsoul uses as device id
+func (a *MajsoulAPI) GenerateDeviceId() string {
 	return uuid.New().String()
 }
 
-func SendRegisterCode(api, email string) error {
+// SendRegisterCode Send an email to the email you provide and determine whether it succeeds
+func (a *MajsoulAPI) SendRegisterCode(email string) error {
 	resp, err := http.Post(
-		"https://"+api+"/api/user/sign_up_code",
+		a.systemEmailUrl+"/api/user/sign_up_code",
 		"application/x-www-form-urlencoded",
 		strings.NewReader("type=email&email="+email))
 	if err != nil {
