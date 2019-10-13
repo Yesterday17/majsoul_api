@@ -2,7 +2,7 @@ package majsoul_api
 
 import (
 	"github.com/Yesterday17/majsoul_api/lq"
-	"github.com/golang/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 )
 
 var reqCommon, _ = proto.Marshal(&lq.ReqCommon{})

@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/Yesterday17/majsoul_api/lq"
-	"log"
 	"nhooyr.io/websocket"
 )
 
@@ -27,19 +26,21 @@ type socketClient struct {
 }
 
 func (s *socketClient) init(base, service, url string) (err error) {
-	isLatest, latest := IsLatest(base)
-	if !isLatest {
-		notLatest := fmt.Sprintf(
-			"You're not using the latest majsoul api!\n"+
-				"Now using: %s, Latest: %s\n"+
-				"Please upgrade this package.",
-			ApiVersion,
-			latest,
-		)
-		if ForceUsingOldApi {
-			log.Println(notLatest)
-		} else {
-			panic(notLatest)
+	if !ignoreVersionCheck {
+		isLatest, latest := IsLatest(base)
+		if !isLatest {
+			notLatest := fmt.Sprintf(
+				"You're not using the latest majsoul api!\n"+
+					"Now using: %s, Latest: %s\n"+
+					"Please upgrade this package.",
+				ApiVersion,
+				latest,
+			)
+			if panicOnVersionMismatch {
+				panic(notLatest)
+			} else {
+				fmt.Println(notLatest)
+			}
 		}
 	}
 
@@ -65,7 +66,7 @@ func (s *socketClient) Listen() {
 		var respType = p[0]
 		switch respType {
 		case socketNull, socketRequest:
-			log.Fatalf("Unexpected socket type: %d", respType)
+			fmt.Printf("Unexpected socket type: %d", respType)
 		case socketNotify:
 			p = p[1:]
 			data := unWrap(p)

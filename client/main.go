@@ -24,7 +24,8 @@ func main() {
 	fmt.Println("resourceVersion", api.GetResourceVersion(MajsoulBase))
 	fmt.Println("codeVersion", api.GetCodeVersion(MajsoulBase))
 
-	// api.ForceUsingOldApi = true
+	//api.IgnoreVersionCheck(true)
+	//api.PanicOnVersionMismatch(false)
 	lobby, _ := api.NewLobbyClient(MajsoulBase, MajsoulServer)
 	game, _ := api.NewGameClient(MajsoulBase, MajsoulServer)
 

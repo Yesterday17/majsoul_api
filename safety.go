@@ -6,10 +6,14 @@ import (
 )
 
 const (
-	ApiVersion = "v0.6.58.w"
+	ApiVersion          = "0.6.58.w"
+	LatestTestedVersion = "0.6.73.w"
 )
 
-var ForceUsingOldApi = false
+var (
+	ignoreVersionCheck     = false
+	panicOnVersionMismatch = true
+)
 
 type majsoulVersion struct {
 	Code    string `json:"code"`
@@ -22,6 +26,14 @@ type resVersion struct {
 
 type prefixVersion struct {
 	Prefix string `json:"prefix"`
+}
+
+func IgnoreVersionCheck(ignore bool) {
+	ignoreVersionCheck = ignore
+}
+
+func PanicOnVersionMismatch(panic bool) {
+	panicOnVersionMismatch = panic
 }
 
 func GetResourceVersion(base string) string {
@@ -82,10 +94,14 @@ func IsLatest(base string) (bool, string) {
 		panic(err)
 	}
 
+	if version.Version == LatestTestedVersion {
+		return true, ApiVersion
+	}
+
 	prefix, err := getResVersion(base, version.Version)
 	if err != nil {
 		panic(err)
 	}
 
-	return prefix["res/proto/liqi.json"].Prefix == ApiVersion, prefix["res/proto/liqi.json"].Prefix
+	return prefix["res/proto/liqi.json"].Prefix == "v"+ApiVersion, prefix["res/proto/liqi.json"].Prefix
 }
