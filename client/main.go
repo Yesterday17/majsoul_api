@@ -8,11 +8,17 @@ import (
 )
 
 const (
+	MajsoulApi      = "api.majsoul.com:2501"
 	MajsoulServer   = "wss://mj-srv-5.majsoul.com:4101"
 	ResourceVersion = "0.6.73.w"
 )
 
 func main() {
+	err := api.SendRegisterCode(MajsoulApi, "t@ab.cd")
+	if err != nil {
+		panic(err)
+	}
+
 	lobby, _ := api.NewLobbyClient(MajsoulServer)
 	game, _ := api.NewGameClient(MajsoulServer)
 
