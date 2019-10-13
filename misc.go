@@ -25,14 +25,6 @@ func GenerateDeviceId() string {
 	return uuid.New().String()
 }
 
-// TODO
-func IsLatest() bool {
-	// 1. https://www.majsoul.com/1/version.json
-	// 2. https://www.majsoul.com/1/resversion0.6.73.w.json
-	// 3. res/proto/liqi.json -> prefix
-	return true
-}
-
 func SendRegisterCode(api, email string) error {
 	resp, err := http.Post(
 		"https://"+api+"/api/user/sign_up_code",
@@ -42,14 +34,22 @@ func SendRegisterCode(api, email string) error {
 		return err
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := readResponse(resp)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
-	if string(body) != "{}" {
+	if body != "{}" {
 		return fmt.Errorf(string(body))
 	}
 	return nil
+}
+
+func readResponse(resp *http.Response) (string, error) {
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	return string(body), nil
 }

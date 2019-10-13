@@ -3,6 +3,7 @@ package majsoul_api
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"github.com/Yesterday17/majsoul_api/lq"
 	"log"
 	"nhooyr.io/websocket"
@@ -25,7 +26,23 @@ type socketClient struct {
 	listeners map[string][]func(wrapper lq.Wrapper)
 }
 
-func (s *socketClient) init(service string, url string) (err error) {
+func (s *socketClient) init(base, service, url string) (err error) {
+	isLatest, latest := IsLatest(base)
+	if !isLatest {
+		notLatest := fmt.Sprintf(
+			"You're not using the latest majsoul api!\n"+
+				"Now using: %s, Latest: %s\n"+
+				"Please upgrade this package.",
+			ApiVersion,
+			latest,
+		)
+		if ForceUsingOldApi {
+			log.Println(notLatest)
+		} else {
+			panic(notLatest)
+		}
+	}
+
 	s.service = ".lq." + service
 	s.index = 0
 

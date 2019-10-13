@@ -8,19 +8,25 @@ import (
 )
 
 const (
-	MajsoulApi      = "api.majsoul.com:2501"
-	MajsoulServer   = "wss://mj-srv-5.majsoul.com:4101"
-	ResourceVersion = "0.6.73.w"
+	MajsoulBase   = "www.majsoul.com/1"
+	MajsoulApi    = "api.majsoul.com:2501"
+	MajsoulServer = "wss://mj-srv-5.majsoul.com:4101"
 )
 
 func main() {
 	err := api.SendRegisterCode(MajsoulApi, "t@ab.cd")
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
-	lobby, _ := api.NewLobbyClient(MajsoulServer)
-	game, _ := api.NewGameClient(MajsoulServer)
+	isLatest, latest := api.IsLatest(MajsoulBase)
+	fmt.Println("isLatest", isLatest, latest)
+	fmt.Println("resourceVersion", api.GetResourceVersion(MajsoulBase))
+	fmt.Println("codeVersion", api.GetCodeVersion(MajsoulBase))
+
+	// api.ForceUsingOldApi = true
+	lobby, _ := api.NewLobbyClient(MajsoulBase, MajsoulServer)
+	game, _ := api.NewGameClient(MajsoulBase, MajsoulServer)
 
 	go lobby.Listen()
 
@@ -36,7 +42,7 @@ func main() {
 			Browser:    "firefox",
 		},
 		RandomKey:      api.GenerateDeviceId(),
-		ClientVersion:  ResourceVersion,
+		ClientVersion:  api.GetResourceVersion(MajsoulBase),
 		GenAccessToken: true,
 		CurrencyPlatforms: []uint32{
 			// 1, // Google Play

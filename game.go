@@ -9,9 +9,9 @@ type gameClient struct {
 	socketClient
 }
 
-func NewGameClient(url string) (*gameClient, error) {
+func NewGameClient(base, url string) (*gameClient, error) {
 	client := &gameClient{}
-	return client, client.init("FastTest", url)
+	return client, client.init(base, "FastTest", url)
 }
 
 func (l *gameClient) AuthGame(in *lq.ReqAuthGame) chan lq.ResAuthGame {

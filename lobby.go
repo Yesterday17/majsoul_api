@@ -9,9 +9,9 @@ type lobbyClient struct {
 	socketClient
 }
 
-func NewLobbyClient(url string) (*lobbyClient, error) {
+func NewLobbyClient(base, url string) (*lobbyClient, error) {
 	client := &lobbyClient{}
-	return client, client.init("Lobby", url)
+	return client, client.init(base, "Lobby", url)
 }
 
 func (l *lobbyClient) FetchConnectionInfo() chan lq.ResConnectionInfo {
