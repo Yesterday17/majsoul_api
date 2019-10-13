@@ -18,13 +18,13 @@ type prefixVersion struct {
 	Prefix string `json:"prefix"`
 }
 
-// IgnoreVersionCheck Ignore version check when creating socket clients.
+// Ignore version check when creating socket clients.
 func (a *MajsoulAPI) IgnoreVersionCheck(ignore bool) {
 	a.ignoreVersionCheck = ignore
 }
 
-// PanicOnVersionMismatch When ignoreVersionCheck is false, this controls whether panic(version_mismatch) works,
-// or just print out the warning information
+// When ignoreVersionCheck is false, this controls whether panic(version_mismatch) works.
+// Or just print out the warning information.
 func (a *MajsoulAPI) PanicOnVersionMismatch(panic bool) {
 	a.panicOnVersionMismatch = panic
 }
@@ -35,7 +35,7 @@ func (a *MajsoulAPI) GetResourceVersion() string {
 	return version.Version
 }
 
-// GetCodeVersion Get code.js version now
+// Get code.js version now.
 func (a *MajsoulAPI) GetCodeVersion() string {
 	version, _ := getVersion(a.Base)
 	return version.Code
@@ -105,8 +105,8 @@ func (a *MajsoulAPI) getCachedResVersion() error {
 	return nil
 }
 
-// IsLatest Determine whether it's the latest lobby version
-// returns a boolean and a detailed version string
+// IsLatest Determine whether it's the latest lobby version.
+// It returns a boolean and a detailed version string.
 func (a *MajsoulAPI) IsLatest() (bool, string, error) {
 	version, err := getVersion(a.Base)
 	if err != nil {

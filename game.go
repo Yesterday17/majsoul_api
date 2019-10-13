@@ -9,8 +9,8 @@ type gameClient struct {
 	socketClient
 }
 
-// GameClient Create a new game(FastTest) client
-// A game client handles most in-game performances
+// Create a new game(FastTest) client.
+// A game client handles most in-game performances.
 func (a *MajsoulAPI) GameClient() (*gameClient, error) {
 	if a.lobbyClient == nil {
 		a.lobbyClient = &lobbyClient{}

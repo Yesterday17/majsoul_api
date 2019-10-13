@@ -1,3 +1,4 @@
+// Package majsoul_api provides access to majsoul's websocket server
 package majsoul_api
 
 import (
@@ -33,7 +34,7 @@ type MajsoulAPI struct {
 	websocketServers   []string
 }
 
-// NewMajsoulAPI Create a new majsoul api instance
+// Create a new majsoul api instance.
 func NewMajsoulAPI(base string) (api *MajsoulAPI, err error) {
 	api = &MajsoulAPI{
 		Base:                   base,
@@ -82,12 +83,12 @@ func NewMajsoulAPI(base string) (api *MajsoulAPI, err error) {
 	return
 }
 
-// GetRegionUrl Get region url current api
+// Get region url current api.
 func (a *MajsoulAPI) GetRegionUrl() string {
 	return a.regions[a.Region]
 }
 
-// GetWebSocketUrl Pick up one websocket server from the slice
+// Pick up one websocket server from the slice.
 func (a *MajsoulAPI) GetWebSocketUrl() string {
 	if a.activeWebSocketUrl == "" {
 		rand.Seed(time.Now().Unix())

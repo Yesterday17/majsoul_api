@@ -11,19 +11,19 @@ import (
 	"strings"
 )
 
-// EncodePassword Hash your clear password using the way majsoul uses
+// Hash your clear password using the way majsoul uses.
 func (a *MajsoulAPI) EncodePassword(password string) string {
 	h := hmac.New(sha256.New, []byte(a.Secret))
 	h.Write([]byte(password))
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-// GenerateDeviceId Generate a uuid which majsoul uses as device id
+// Generate a uuid which majsoul uses as device id.
 func (a *MajsoulAPI) GenerateDeviceId() string {
 	return uuid.New().String()
 }
 
-// SendRegisterCode Send an email to the email you provide and determine whether it succeeds
+// SendRegisterCode Send an email to the email you provide and determine whether it succeeds.
 func (a *MajsoulAPI) SendRegisterCode(email string) error {
 	resp, err := http.Post(
 		a.systemEmailUrl+"/api/user/sign_up_code",

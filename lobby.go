@@ -9,8 +9,8 @@ type lobbyClient struct {
 	socketClient
 }
 
-// LobbyClient Create a new lobby client
-// A lobby client handles most non-game performances
+// Create a new lobby client.
+// A lobby client handles most non-game performances.
 func (a *MajsoulAPI) LobbyClient() (*lobbyClient, error) {
 	if a.lobbyClient == nil {
 		a.lobbyClient = &lobbyClient{}
